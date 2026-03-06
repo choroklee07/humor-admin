@@ -30,7 +30,7 @@ export default async function DashboardPage() {
     supabase.from("bug_reports").select("*", { count: "exact", head: true }),
     supabase.from("captions").select("created_datetime_utc").gte("created_datetime_utc", fourteenDaysAgo),
     supabase.from("profiles").select("created_datetime_utc").gte("created_datetime_utc", fourteenDaysAgo),
-    supabase.from("images").select("url").not("url", "is", null).limit(40),
+    (supabase as any).from("images").select("url").not("url", "is", null).limit(40) as Promise<{ data: { url: string }[] | null }>,
   ]);
 
   // Build day buckets for last 14 days
@@ -69,7 +69,7 @@ export default async function DashboardPage() {
 
   return (
     <AdminShell user={{ email: user?.email }}>
-      <LoginRainEffect imageUrls={(memeImageRows ?? []).map((r) => r.url).filter(Boolean) as string[]} />
+      <LoginRainEffect imageUrls={((memeImageRows as { url: string }[] | null) ?? []).map((r) => r.url).filter(Boolean) as string[]} />
       <div className="p-8 space-y-6">
 
         {/* Header */}

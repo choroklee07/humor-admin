@@ -22,7 +22,7 @@ export async function createImage(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return;
 
-  await supabase.from("images").insert({
+  await (supabase as any).from("images").insert({
     url: formData.get("url") as string,
     is_public: formData.get("is_public") === "on",
     is_common_use: formData.get("is_common_use") === "on",
@@ -36,7 +36,7 @@ export async function updateImage(formData: FormData) {
   const supabase = await createClient();
   const id = formData.get("id") as string;
 
-  await supabase
+  await (supabase as any)
     .from("images")
     .update({
       url: formData.get("url") as string,

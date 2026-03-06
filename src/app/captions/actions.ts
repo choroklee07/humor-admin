@@ -7,7 +7,7 @@ export async function toggleFeatured(formData: FormData) {
   const supabase = await createClient();
   const id = formData.get("id") as string;
   const value = formData.get("value") === "true";
-  await supabase
+  await (supabase as any)
     .from("captions")
     .update({ is_featured: value, modified_datetime_utc: new Date().toISOString() })
     .eq("id", id);
@@ -18,7 +18,7 @@ export async function togglePublic(formData: FormData) {
   const supabase = await createClient();
   const id = formData.get("id") as string;
   const value = formData.get("value") === "true";
-  await supabase
+  await (supabase as any)
     .from("captions")
     .update({ is_public: value, modified_datetime_utc: new Date().toISOString() })
     .eq("id", id);

@@ -8,15 +8,30 @@ export default async function ReportsPage() {
     data: { user: currentUser },
   } = await supabase.auth.getUser();
 
+  type CaptionReport = {
+    id: string;
+    reason: string | null;
+    created_datetime_utc: string;
+    profiles: { email: string } | null;
+    captions: { content: string } | null;
+  };
+  type ImageReport = {
+    id: string;
+    reason: string | null;
+    created_datetime_utc: string;
+    profiles: { email: string } | null;
+    images: { url: string } | null;
+  };
+
   const [{ data: captionReports }, { data: imageReports }] = await Promise.all([
-    supabase
+    (supabase as any)
       .from("reported_captions")
       .select("id, reason, created_datetime_utc, profiles(email), captions(content)")
-      .order("created_datetime_utc", { ascending: false }),
-    supabase
+      .order("created_datetime_utc", { ascending: false }) as Promise<{ data: CaptionReport[] | null }>,
+    (supabase as any)
       .from("reported_images")
       .select("id, reason, created_datetime_utc, profiles(email), images(url)")
-      .order("created_datetime_utc", { ascending: false }),
+      .order("created_datetime_utc", { ascending: false }) as Promise<{ data: ImageReport[] | null }>,
   ]);
 
   const totalCount = (captionReports?.length ?? 0) + (imageReports?.length ?? 0);

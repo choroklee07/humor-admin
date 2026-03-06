@@ -14,11 +14,19 @@ export default async function EditImagePage({
     data: { user: currentUser },
   } = await supabase.auth.getUser();
 
-  const { data: image } = await supabase
+  type Image = {
+    id: string;
+    url: string | null;
+    additional_context: string | null;
+    is_public: boolean | null;
+    is_common_use: boolean | null;
+  };
+
+  const { data: image } = (await supabase
     .from("images")
     .select("*")
     .eq("id", id)
-    .single();
+    .single()) as { data: Image | null };
 
   if (!image) redirect("/images");
 

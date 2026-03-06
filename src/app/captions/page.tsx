@@ -8,11 +8,22 @@ export default async function CaptionsPage() {
     data: { user: currentUser },
   } = await supabase.auth.getUser();
 
-  const { data: captions } = await supabase
+  type Caption = {
+    id: string;
+    content: string | null;
+    is_public: boolean | null;
+    is_featured: boolean | null;
+    like_count: number | null;
+    created_datetime_utc: string;
+    profiles: { email: string } | null;
+    images: { url: string } | null;
+  };
+
+  const { data: captions } = (await supabase
     .from("captions")
     .select("id, content, is_public, is_featured, like_count, created_datetime_utc, profiles(email), images(url)")
     .order("created_datetime_utc", { ascending: false })
-    .limit(100);
+    .limit(100)) as { data: Caption[] | null };
 
   return (
     <AdminShell user={{ email: currentUser?.email }}>
