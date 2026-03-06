@@ -8,17 +8,15 @@ export function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
+    sessionStorage.removeItem("humor_rain_done");
     await supabase.auth.signOut();
     router.push("/login");
     router.refresh();
   };
 
   return (
-    <button
-      onClick={handleLogout}
-      className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-white dark:hover:bg-zinc-800"
-    >
-      Sign out
+    <button onClick={handleLogout} className="cyber-btn cyber-btn-danger rounded px-4 py-2">
+      SIGN OUT
     </button>
   );
 }
