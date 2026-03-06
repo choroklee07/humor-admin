@@ -8,10 +8,18 @@ export default async function BugReportsPage() {
     data: { user: currentUser },
   } = await supabase.auth.getUser();
 
-  const { data: bugReports } = await supabase
+  type BugReport = {
+    id: string;
+    subject: string | null;
+    message: string | null;
+    created_datetime_utc: string;
+    profiles: { email: string } | null;
+  };
+
+  const { data: bugReports } = (await supabase
     .from("bug_reports")
     .select("id, subject, message, created_datetime_utc, profiles(email)")
-    .order("created_datetime_utc", { ascending: false });
+    .order("created_datetime_utc", { ascending: false })) as { data: BugReport[] | null };
 
   return (
     <AdminShell user={{ email: currentUser?.email }}>
