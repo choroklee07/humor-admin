@@ -1,13 +1,14 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/AdminShell";
 import { dismissCaptionReport, dismissImageReport } from "./actions";
 
 export default async function ReportsPage() {
-  const supabase = await createClient();
+  const sessionClient = await createClient();
   const {
     data: { user: currentUser },
-  } = await supabase.auth.getUser();
+  } = await sessionClient.auth.getUser();
 
+  const supabase = createAdminClient();
   type CaptionReport = {
     id: string;
     reason: string | null;

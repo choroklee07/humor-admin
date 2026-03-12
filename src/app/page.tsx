@@ -1,14 +1,15 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/AdminShell";
 import { LoginRainEffect } from "@/components/LoginRainEffect";
 import Link from "next/link";
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
+  const sessionClient = await createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await sessionClient.auth.getUser();
 
+  const supabase = createAdminClient();
   const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
 
   const [

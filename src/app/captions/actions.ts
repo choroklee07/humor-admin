@@ -1,10 +1,10 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function toggleFeatured(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const id = formData.get("id") as string;
   const value = formData.get("value") === "true";
   await (supabase as any)
@@ -15,7 +15,7 @@ export async function toggleFeatured(formData: FormData) {
 }
 
 export async function togglePublic(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const id = formData.get("id") as string;
   const value = formData.get("value") === "true";
   await (supabase as any)
@@ -26,7 +26,7 @@ export async function togglePublic(formData: FormData) {
 }
 
 export async function deleteCaption(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const id = formData.get("id") as string;
   await supabase.from("captions").delete().eq("id", id);
   revalidatePath("/captions");

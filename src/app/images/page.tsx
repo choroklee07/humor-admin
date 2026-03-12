@@ -1,14 +1,15 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/AdminShell";
-import { createImage } from "./actions";
+import { createImage, uploadImageViaPipeline } from "./actions";
 import { ImagesTable } from "./ImagesTable";
 
 export default async function ImagesPage() {
-  const supabase = await createClient();
+  const sessionClient = await createClient();
   const {
     data: { user: currentUser },
-  } = await supabase.auth.getUser();
+  } = await sessionClient.auth.getUser();
 
+  const supabase = createAdminClient();
   const [{ data: images }, { count: totalCount }] = await Promise.all([
     supabase
       .from("images")
@@ -27,9 +28,49 @@ export default async function ImagesPage() {
           <p className="cyber-label mt-1">{totalCount ?? 0} TOTAL RECORDS</p>
         </div>
 
-        {/* Create form */}
+        {/* Upload via pipeline */}
         <div className="cyber-card cyber-corner rounded p-6">
-          <p className="cyber-label mb-4 tracking-[0.15em]">{`// ADD NEW IMAGE`}</p>
+          <p className="cyber-label mb-4 tracking-[0.15em]">{`// UPLOAD IMAGE · VIA PIPELINE`}</p>
+          <form action={uploadImageViaPipeline as (formData: FormData) => void} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="cyber-label text-[0.6rem]">IMAGE FILE *</label>
+                <input
+                  name="file"
+                  type="file"
+                  required
+                  accept="image/*"
+                  className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] file:mr-3 file:py-1 file:px-3 file:rounded file:border file:border-[rgba(0,212,255,0.3)] file:bg-[rgba(0,212,255,0.08)] file:text-[#00d4ff] file:font-mono file:text-[0.6rem] file:tracking-wider cursor-pointer focus:outline-none focus:border-[rgba(0,212,255,0.6)]"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="cyber-label text-[0.6rem]">ADDITIONAL CONTEXT</label>
+                <input
+                  name="additional_context"
+                  placeholder="Optional description..."
+                  className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="is_public" className="accent-[#00d4ff]" />
+                <span className="cyber-label text-[0.65rem]">PUBLIC</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="is_common_use" defaultChecked className="accent-[#00d4ff]" />
+                <span className="cyber-label text-[0.65rem]">COMMON USE</span>
+              </label>
+              <button type="submit" className="cyber-btn rounded px-5 py-2">
+                UPLOAD
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Add by URL (fallback) */}
+        <div className="cyber-card rounded p-6">
+          <p className="cyber-label mb-4 tracking-[0.15em] opacity-50">{`// ADD BY URL · FALLBACK`}</p>
           <form action={createImage} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
@@ -52,20 +93,11 @@ export default async function ImagesPage() {
             </div>
             <div className="flex items-center gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="is_public"
-                  className="accent-[#00d4ff]"
-                />
+                <input type="checkbox" name="is_public" className="accent-[#00d4ff]" />
                 <span className="cyber-label text-[0.65rem]">PUBLIC</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="is_common_use"
-                  defaultChecked
-                  className="accent-[#00d4ff]"
-                />
+                <input type="checkbox" name="is_common_use" defaultChecked className="accent-[#00d4ff]" />
                 <span className="cyber-label text-[0.65rem]">COMMON USE</span>
               </label>
               <button type="submit" className="cyber-btn rounded px-5 py-2">

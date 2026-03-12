@@ -1,13 +1,14 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/AdminShell";
 import { UsersTable } from "./UsersTable";
 
 export default async function UsersPage() {
-  const supabase = await createClient();
+  const sessionClient = await createClient();
   const {
     data: { user: currentUser },
-  } = await supabase.auth.getUser();
+  } = await sessionClient.auth.getUser();
 
+  const supabase = createAdminClient();
   const [{ data: profiles }, { count: totalCount }] = await Promise.all([
     supabase
       .from("profiles")
