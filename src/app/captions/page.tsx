@@ -4,6 +4,8 @@ import { toggleFeatured, togglePublic, deleteCaption } from "./actions";
 import { createCaptionExample, deleteCaptionExample } from "../caption-examples/actions";
 import Link from "next/link";
 
+const PAGE_SIZE = 50;
+
 const inputCls =
   "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
 
@@ -15,32 +17,84 @@ const SectionDivider = ({ label }: { label: string }) => (
   </div>
 );
 
-export default async function CaptionsPage() {
+export default async function CaptionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; q?: string }>;
+}) {
   const sessionClient = await createClient();
   const {
     data: { user: currentUser },
   } = await sessionClient.auth.getUser();
 
   const supabase = createAdminClient();
-  const [{ data: captions }, { data: requests }, { data: examples }, { count: requestsTotal }] =
-    await Promise.all([
-      (supabase as any)
-        .from("captions")
-        .select("id, content, is_public, is_featured, like_count, created_datetime_utc, profiles(email), images(url)")
-        .order("created_datetime_utc", { ascending: false })
-        .limit(100),
-      (supabase as any)
-        .from("caption_requests")
-        .select("id, created_datetime_utc, profiles(email), images(url)")
-        .order("created_datetime_utc", { ascending: false })
-        .limit(50),
-      (supabase as any)
-        .from("caption_examples")
-        .select("id, image_description, caption, explanation, priority, created_datetime_utc, images(url)")
-        .order("priority", { ascending: false })
-        .order("id", { ascending: true }),
-      supabase.from("caption_requests").select("*", { count: "exact", head: true }),
-    ]);
+
+  const { page: pageParam, q: qParam } = await searchParams;
+  const page = Math.max(0, parseInt(pageParam ?? "0"));
+  const q = qParam?.trim() ?? "";
+
+  // If searching, find matching profile IDs first
+  let profileIdFilter: string[] | null = null;
+  if (q) {
+    const { data: matchingProfiles } = await supabase
+      .from("profiles")
+      .select("id")
+      .or(`email.ilike.%${q}%,first_name.ilike.%${q}%,last_name.ilike.%${q}%`) as { data: { id: string }[] | null };
+    profileIdFilter = (matchingProfiles ?? []).map((p) => p.id);
+  }
+
+  // Build captions query
+  // Use FK hint (profiles!profile_id) because captions has 3 FKs to profiles:
+  // profile_id, created_by_user_id, modified_by_user_id — PostgREST requires disambiguation.
+  let captionsQuery = (supabase as any)
+    .from("captions")
+    .select(
+      "id, content, is_public, is_featured, like_count, created_datetime_utc, profiles!profile_id(email, first_name, last_name), images!image_id(url)",
+      { count: "exact" }
+    )
+    .order("created_datetime_utc", { ascending: false });
+
+  if (profileIdFilter !== null) {
+    if (profileIdFilter.length === 0) {
+      // No matching profiles — force empty result
+      captionsQuery = captionsQuery.eq("id", "00000000-0000-0000-0000-000000000000");
+    } else {
+      captionsQuery = captionsQuery.in("profile_id", profileIdFilter);
+    }
+  }
+
+  captionsQuery = captionsQuery.range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+  const [
+    { data: captions, count: captionsTotal },
+    { data: requests },
+    { data: examples },
+    { count: requestsTotal },
+  ] = await Promise.all([
+    captionsQuery,
+    (supabase as any)
+      .from("caption_requests")
+      .select("id, created_datetime_utc, profiles!profile_id(email), images!image_id(url)")
+      .order("created_datetime_utc", { ascending: false })
+      .limit(50),
+    (supabase as any)
+      .from("caption_examples")
+      .select("id, image_description, caption, explanation, priority, created_datetime_utc, images(url)")
+      .order("priority", { ascending: false })
+      .order("id", { ascending: true }),
+    supabase.from("caption_requests").select("*", { count: "exact", head: true }),
+  ]);
+
+  const totalPages = Math.ceil((captionsTotal ?? 0) / PAGE_SIZE);
+
+  const buildHref = (p: number, query?: string) => {
+    const params = new URLSearchParams();
+    const qVal = query !== undefined ? query : q;
+    if (qVal) params.set("q", qVal);
+    if (p > 0) params.set("page", String(p));
+    const str = params.toString();
+    return `/captions${str ? `?${str}` : ""}`;
+  };
 
   return (
     <AdminShell user={{ email: currentUser?.email }}>
@@ -54,8 +108,36 @@ export default async function CaptionsPage() {
         <section className="space-y-3">
           <div className="flex items-baseline gap-3">
             <h2 className="cyber-text font-mono text-lg font-bold">CAPTIONS</h2>
-            <span className="cyber-label text-[0.6rem]">{captions?.length ?? 0} RECORDS (LATEST 100)</span>
+            <span className="cyber-label text-[0.6rem]">
+              {captionsTotal ?? 0} RECORDS{q ? ` MATCHING "${q}"` : ""}
+              {` · PAGE ${page + 1}/${Math.max(1, totalPages)}`}
+            </span>
           </div>
+
+          {/* Search bar */}
+          <form method="GET" action="/captions" className="flex gap-2">
+            <input
+              name="q"
+              defaultValue={q}
+              placeholder="Search by email or name..."
+              className="flex-1 bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)]"
+            />
+            <button
+              type="submit"
+              className="cyber-btn rounded px-4 py-2 text-[0.65rem]"
+            >
+              SEARCH
+            </button>
+            {q && (
+              <Link
+                href="/captions"
+                className="cyber-btn rounded px-4 py-2 text-[0.65rem] flex items-center"
+              >
+                CLEAR
+              </Link>
+            )}
+          </form>
+
           <div className="cyber-card rounded overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
@@ -67,28 +149,45 @@ export default async function CaptionsPage() {
                   </tr>
                 </thead>
                 <tbody>
+                  {captions?.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="px-4 py-6 text-center text-[rgba(200,240,255,0.3)] font-mono text-xs">
+                        NO CAPTIONS FOUND
+                      </td>
+                    </tr>
+                  )}
                   {captions?.map((caption: any) => (
                     <tr key={caption.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
                       <td className="px-4 py-3 max-w-[280px]">
-                        <span className="text-[rgba(200,240,255,0.8)] block truncate" title={caption.content ?? ""}>{caption.content ?? <span className="opacity-30">—</span>}</span>
+                        <span className="text-[rgba(200,240,255,0.8)] block truncate" title={caption.content ?? ""}>
+                          {caption.content ?? <span className="opacity-30">—</span>}
+                        </span>
                       </td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">{caption.profiles?.email ?? "—"}</td>
+                      <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">
+                        {caption.profiles?.email ?? "—"}
+                      </td>
                       <td className="px-4 py-3 cyber-value">{caption.like_count}</td>
                       <td className="px-4 py-3">
                         <form action={togglePublic} className="inline">
                           <input type="hidden" name="id" value={caption.id} />
                           <input type="hidden" name="value" value={String(!caption.is_public)} />
-                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_public ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)] hover:bg-[rgba(0,212,255,0.15)]" : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)] hover:border-[rgba(0,212,255,0.4)]"}`}>{caption.is_public ? "YES" : "NO"}</button>
+                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_public ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)] hover:bg-[rgba(0,212,255,0.15)]" : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)] hover:border-[rgba(0,212,255,0.4)]"}`}>
+                            {caption.is_public ? "YES" : "NO"}
+                          </button>
                         </form>
                       </td>
                       <td className="px-4 py-3">
                         <form action={toggleFeatured} className="inline">
                           <input type="hidden" name="id" value={caption.id} />
                           <input type="hidden" name="value" value={String(!caption.is_featured)} />
-                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_featured ? "border-[#00ff88] text-[#00ff88] bg-[rgba(0,255,136,0.08)] hover:bg-[rgba(0,255,136,0.15)]" : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)] hover:border-[rgba(0,212,255,0.4)]"}`}>{caption.is_featured ? "YES" : "NO"}</button>
+                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_featured ? "border-[#00ff88] text-[#00ff88] bg-[rgba(0,255,136,0.08)] hover:bg-[rgba(0,255,136,0.15)]" : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)] hover:border-[rgba(0,212,255,0.4)]"}`}>
+                            {caption.is_featured ? "YES" : "NO"}
+                          </button>
                         </form>
                       </td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(caption.created_datetime_utc).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                        {new Date(caption.created_datetime_utc).toLocaleDateString()}
+                      </td>
                       <td className="px-4 py-3">
                         <form action={deleteCaption}>
                           <input type="hidden" name="id" value={caption.id} />
@@ -101,6 +200,27 @@ export default async function CaptionsPage() {
               </table>
             </div>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-1">
+              <Link
+                href={buildHref(page - 1)}
+                className={`cyber-btn rounded px-4 py-1.5 text-[0.65rem] ${page === 0 ? "opacity-30 pointer-events-none" : ""}`}
+              >
+                ← PREV
+              </Link>
+              <span className="cyber-label text-[0.6rem]">
+                PAGE {page + 1} / {totalPages}
+              </span>
+              <Link
+                href={buildHref(page + 1)}
+                className={`cyber-btn rounded px-4 py-1.5 text-[0.65rem] ${page >= totalPages - 1 ? "opacity-30 pointer-events-none" : ""}`}
+              >
+                NEXT →
+              </Link>
+            </div>
+          )}
         </section>
 
         <SectionDivider label="CAPTION REQUESTS" />
