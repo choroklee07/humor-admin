@@ -1,7 +1,7 @@
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/AdminShell";
-import { createTerm, deleteTerm } from "./actions";
-import Link from "next/link";
+import { createTerm } from "./actions";
+import { TermRow } from "./TermRow";
 
 const inputCls =
   "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
@@ -94,42 +94,7 @@ export default async function TermsPage() {
               </thead>
               <tbody>
                 {terms?.map((term: any) => (
-                  <tr
-                    key={term.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
-                  >
-                    <td className="px-4 py-3">
-                      <span className="text-[#00d4ff] font-bold">{term.term}</span>
-                    </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">
-                      {term.term_types?.name ?? "—"}
-                    </td>
-                    <td className="px-4 py-3 max-w-[280px]">
-                      <span className="text-[rgba(200,240,255,0.7)] block truncate" title={term.definition}>
-                        {term.definition}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 cyber-value text-center">{term.priority}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
-                      {new Date(term.created_datetime_utc).toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <Link
-                          href={`/terms/${term.id}/edit`}
-                          className="cyber-btn rounded px-3 py-1 text-[0.6rem] inline-block"
-                        >
-                          EDIT
-                        </Link>
-                        <form action={deleteTerm}>
-                          <input type="hidden" name="id" value={term.id} />
-                          <button type="submit" className="cyber-btn cyber-btn-danger rounded px-3 py-1 text-[0.6rem]">
-                            DELETE
-                          </button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
+                  <TermRow key={term.id} term={term} />
                 ))}
               </tbody>
             </table>

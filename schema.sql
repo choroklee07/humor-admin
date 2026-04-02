@@ -42,20 +42,6 @@ CREATE TABLE public.caption_examples (
   CONSTRAINT caption_examples_created_by_user_id_fkey FOREIGN KEY (created_by_user_id) REFERENCES public.profiles(id),
   CONSTRAINT caption_examples_modified_by_user_id_fkey FOREIGN KEY (modified_by_user_id) REFERENCES public.profiles(id)
 );
-CREATE TABLE public.caption_likes (
-  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-  created_datetime_utc timestamp with time zone NOT NULL DEFAULT now(),
-  modified_datetime_utc timestamp with time zone NOT NULL DEFAULT now(),
-  profile_id uuid NOT NULL,
-  caption_id uuid NOT NULL,
-  created_by_user_id uuid NOT NULL DEFAULT auth.uid(),
-  modified_by_user_id uuid NOT NULL DEFAULT auth.uid(),
-  CONSTRAINT caption_likes_pkey PRIMARY KEY (id),
-  CONSTRAINT caption_likes_caption_id_fkey FOREIGN KEY (caption_id) REFERENCES public.captions(id),
-  CONSTRAINT caption_likes_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(id),
-  CONSTRAINT caption_likes_created_by_user_id_fkey FOREIGN KEY (created_by_user_id) REFERENCES public.profiles(id),
-  CONSTRAINT caption_likes_modified_by_user_id_fkey FOREIGN KEY (modified_by_user_id) REFERENCES public.profiles(id)
-);
 CREATE TABLE public.caption_requests (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   created_datetime_utc timestamp with time zone NOT NULL DEFAULT now(),
@@ -91,11 +77,9 @@ CREATE TABLE public.caption_votes (
   vote_value smallint NOT NULL,
   profile_id uuid NOT NULL,
   caption_id uuid NOT NULL,
-  user_id uuid,
-  value smallint,
-  created_at timestamp with time zone DEFAULT now(),
   created_by_user_id uuid NOT NULL DEFAULT auth.uid(),
   modified_by_user_id uuid NOT NULL DEFAULT auth.uid(),
+  is_from_study boolean NOT NULL DEFAULT false,
   CONSTRAINT caption_votes_pkey PRIMARY KEY (id),
   CONSTRAINT caption_votes_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(id),
   CONSTRAINT caption_votes_caption_id_fkey FOREIGN KEY (caption_id) REFERENCES public.captions(id),
@@ -104,8 +88,8 @@ CREATE TABLE public.caption_votes (
 );
 CREATE TABLE public.captions (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
-  created_datetime_utc timestamp with time zone NOT NULL DEFAULT now(),
-  modified_datetime_utc timestamp with time zone NOT NULL DEFAULT now(),
+  created_datetime_utc timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modified_datetime_utc timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   content character varying,
   is_public boolean NOT NULL,
   profile_id uuid NOT NULL,
@@ -665,6 +649,24 @@ CREATE TABLE public.study_caption_mappings (
   CONSTRAINT study_caption_mappings_study_id_fkey FOREIGN KEY (study_id) REFERENCES public.studies(id),
   CONSTRAINT study_caption_mappings_created_by_user_id_fkey FOREIGN KEY (created_by_user_id) REFERENCES public.profiles(id),
   CONSTRAINT study_caption_mappings_modified_by_user_id_fkey FOREIGN KEY (modified_by_user_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.study_caption_vote_events (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  profile_id uuid NOT NULL,
+  caption_id uuid NOT NULL,
+  study_caption_mapping_id bigint,
+  vote_value USER-DEFINED NOT NULL,
+  time_to_vote_ms integer CHECK (time_to_vote_ms >= 0),
+  input_method USER-DEFINED NOT NULL,
+  client_event_id uuid NOT NULL UNIQUE,
+  session_id uuid,
+  created_datetime_utc timestamp with time zone NOT NULL DEFAULT now(),
+  created_by_user_id uuid NOT NULL DEFAULT auth.uid(),
+  CONSTRAINT study_caption_vote_events_pkey PRIMARY KEY (id),
+  CONSTRAINT study_caption_vote_events_caption_id_fkey FOREIGN KEY (caption_id) REFERENCES public.captions(id),
+  CONSTRAINT study_caption_vote_events_created_by_user_id_fkey FOREIGN KEY (created_by_user_id) REFERENCES public.profiles(id),
+  CONSTRAINT study_caption_vote_events_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(id),
+  CONSTRAINT study_caption_vote_events_study_caption_mapping_id_fkey FOREIGN KEY (study_caption_mapping_id) REFERENCES public.study_caption_mappings(id)
 );
 CREATE TABLE public.study_image_set_image_mappings (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,

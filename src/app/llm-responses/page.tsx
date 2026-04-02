@@ -12,7 +12,7 @@ export default async function LlmResponsesPage() {
     (supabase as any)
       .from("llm_model_responses")
       .select(
-        "id, created_datetime_utc, processing_time_seconds, llm_temperature, llm_model_response, llm_models(name), profiles(email), humor_flavors(slug)"
+        "id, created_datetime_utc, processing_time_seconds, llm_temperature, llm_model_response, llm_models!llm_model_id(name), profiles!profile_id(email), humor_flavors!humor_flavor_id(slug)"
       )
       .order("created_datetime_utc", { ascending: false })
       .limit(100),

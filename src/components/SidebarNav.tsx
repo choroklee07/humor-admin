@@ -12,6 +12,7 @@ const navSections = [
       { href: "/images", label: "IMAGES" },
       { href: "/captions", label: "CAPTIONS" },
       { href: "/humor", label: "HUMOR" },
+      { href: "/terms", label: "TERMS" },
       { href: "/llm", label: "LLM" },
       { href: "/reports", label: "REPORTS" },
       { href: "/bug-reports", label: "BUG REPORTS" },

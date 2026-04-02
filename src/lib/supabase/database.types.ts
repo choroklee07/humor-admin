@@ -200,9 +200,7 @@ export interface Database {
           vote_value: number;
           profile_id: string;
           caption_id: string;
-          user_id: string | null;
-          value: number | null;
-          created_at: string | null;
+          is_from_study: boolean;
           created_by_user_id: string;
           modified_by_user_id: string;
         };
@@ -213,9 +211,7 @@ export interface Database {
           vote_value: number;
           profile_id: string;
           caption_id: string;
-          user_id?: string | null;
-          value?: number | null;
-          created_at?: string | null;
+          is_from_study?: boolean;
           created_by_user_id?: string;
           modified_by_user_id?: string;
         };
@@ -226,9 +222,7 @@ export interface Database {
           vote_value?: number;
           profile_id?: string;
           caption_id?: string;
-          user_id?: string | null;
-          value?: number | null;
-          created_at?: string | null;
+          is_from_study?: boolean;
           created_by_user_id?: string;
           modified_by_user_id?: string;
         };
@@ -1515,6 +1509,47 @@ export interface Database {
           modified_by_user_id?: string;
         };
       };
+      study_caption_vote_events: {
+        Row: {
+          id: number;
+          profile_id: string;
+          caption_id: string;
+          study_caption_mapping_id: number | null;
+          vote_value: string;
+          time_to_vote_ms: number | null;
+          input_method: string;
+          client_event_id: string;
+          session_id: string | null;
+          created_datetime_utc: string;
+          created_by_user_id: string;
+        };
+        Insert: {
+          id?: never;
+          profile_id: string;
+          caption_id: string;
+          study_caption_mapping_id?: number | null;
+          vote_value: string;
+          time_to_vote_ms?: number | null;
+          input_method: string;
+          client_event_id: string;
+          session_id?: string | null;
+          created_datetime_utc?: string;
+          created_by_user_id?: string;
+        };
+        Update: {
+          id?: never;
+          profile_id?: string;
+          caption_id?: string;
+          study_caption_mapping_id?: number | null;
+          vote_value?: string;
+          time_to_vote_ms?: number | null;
+          input_method?: string;
+          client_event_id?: string;
+          session_id?: string | null;
+          created_datetime_utc?: string;
+          created_by_user_id?: string;
+        };
+      };
       study_image_set_image_mappings: {
         Row: {
           id: number;
@@ -1801,32 +1836,6 @@ export interface Database {
           id?: number;
           created_datetime_utc?: string;
           modified_datetime_utc?: string;
-          created_by_user_id?: string;
-          modified_by_user_id?: string;
-        };
-      };
-      whitelist_email_addresses: {
-        Row: {
-          id: number;
-          created_datetime_utc: string;
-          modified_datetime_utc: string;
-          email_address: string;
-          created_by_user_id: string;
-          modified_by_user_id: string;
-        };
-        Insert: {
-          id?: never;
-          created_datetime_utc?: string;
-          modified_datetime_utc?: string;
-          email_address: string;
-          created_by_user_id?: string;
-          modified_by_user_id?: string;
-        };
-        Update: {
-          id?: never;
-          created_datetime_utc?: string;
-          modified_datetime_utc?: string;
-          email_address?: string;
           created_by_user_id?: string;
           modified_by_user_id?: string;
         };
