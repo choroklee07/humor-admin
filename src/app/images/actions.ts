@@ -58,15 +58,17 @@ export async function uploadImageViaPipeline(formData: FormData) {
   return { success: true };
 }
 
-export async function loadMoreImages(offset: number) {
+export async function loadImages(page: number) {
   const supabase = createAdminClient();
+  const from = (page - 1) * 50;
+  const to = from + 49;
   const { data } = await supabase
     .from("images")
     .select(
-      "id, url, is_public, is_common_use, additional_context, created_datetime_utc, profiles(email)"
+      "id, url, is_public, is_common_use, additional_context, created_datetime_utc, profiles!profile_id(email)"
     )
     .order("created_datetime_utc", { ascending: false })
-    .range(offset, offset + 49);
+    .range(from, to);
   return data ?? [];
 }
 

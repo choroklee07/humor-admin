@@ -14,14 +14,12 @@ const navSections = [
       { href: "/humor", label: "HUMOR" },
       { href: "/terms", label: "TERMS" },
       { href: "/llm", label: "LLM" },
-      { href: "/reports", label: "REPORTS" },
-      { href: "/bug-reports", label: "BUG REPORTS" },
     ],
   },
   {
     label: "SETTINGS",
     items: [
-      { href: "/allowed-domains", label: "ALLOWED DOMAINS" },
+      { href: "/allowed-domains", label: "ACCESS CONTROL" },
     ],
   },
 ];
@@ -32,9 +30,6 @@ export function SidebarNav() {
     <nav className="flex flex-col gap-0 px-2">
       {navSections.map((section) => (
         <div key={section.label} className="mb-2">
-          <p className="px-3 pt-3 pb-1 font-mono text-[0.5rem] tracking-[0.25em] text-[rgba(0,212,255,0.25)] select-none">
-            {`// ${section.label}`}
-          </p>
           {section.items.map((item) => {
             const isActive =
               pathname === item.href ||

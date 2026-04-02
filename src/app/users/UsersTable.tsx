@@ -1,40 +1,80 @@
 "use client";
 
-import { useState } from "react";
-import { loadMoreUsers } from "./actions";
+import { useState, useTransition } from "react";
+import { loadUsers, searchUsers, type MergedUser } from "./actions";
 
-type Profile = {
-  id: string;
-  email: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  is_superadmin: boolean;
-  is_in_study: boolean;
-  is_matrix_admin: boolean;
-  created_datetime_utc: string | null;
-};
+const inputCls =
+  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
 
 export function UsersTable({
   initialData,
   totalCount,
 }: {
-  initialData: Profile[];
+  initialData: MergedUser[];
   totalCount: number;
 }) {
-  const [users, setUsers] = useState<Profile[]>(initialData);
-  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<MergedUser[]>(initialData);
+  const [total, setTotal] = useState(totalCount);
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const hasMore = users.length < totalCount;
+  const hasMore = !isSearching && users.length < total;
 
-  const handleLoadMore = async () => {
-    setLoading(true);
-    const more = await loadMoreUsers(users.length);
-    setUsers((prev) => [...prev, ...(more as Profile[])]);
-    setLoading(false);
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    if (!value.trim()) {
+      setIsSearching(false);
+      setUsers(initialData);
+      setTotal(totalCount);
+      setPage(1);
+      return;
+    }
+    setIsSearching(true);
+    startTransition(async () => {
+      const results = await searchUsers(value);
+      setUsers(results);
+      setTotal(results.length);
+    });
+  };
+
+  const handleLoadMore = () => {
+    startTransition(async () => {
+      const nextPage = page + 1;
+      const { users: more, total: newTotal } = await loadUsers(nextPage);
+      setUsers((prev) => [...prev, ...more]);
+      setTotal(newTotal);
+      setPage(nextPage);
+    });
   };
 
   return (
     <div className="space-y-4">
+      {/* Search bar */}
+      <div className="relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 cyber-label text-[0.7rem] pointer-events-none">
+          {"//"}
+        </span>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder="SEARCH BY NAME OR EMAIL..."
+          className={`${inputCls} pl-8`}
+        />
+        {isPending && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 cyber-label text-[0.6rem]">
+            SEARCHING...
+          </span>
+        )}
+        {isSearching && !isPending && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgba(0,212,255,0.4)] font-mono text-[0.6rem]">
+            {users.length} RESULTS
+          </span>
+        )}
+      </div>
+
       <div className="cyber-card rounded overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono">
@@ -48,31 +88,39 @@ export function UsersTable({
               </tr>
             </thead>
             <tbody>
-              {users.map((profile) => (
-                <tr
-                  key={profile.id}
-                  className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
-                >
-                  <td className="px-4 py-3 cyber-value">{profile.email ?? "—"}</td>
-                  <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">
-                    {[profile.first_name, profile.last_name].filter(Boolean).join(" ") || "—"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge active={profile.is_superadmin} color="green" />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge active={profile.is_in_study} color="cyan" />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge active={profile.is_matrix_admin} color="purple" />
-                  </td>
-                  <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
-                    {profile.created_datetime_utc
-                      ? new Date(profile.created_datetime_utc).toLocaleDateString()
-                      : "—"}
+              {users.length ? (
+                users.map((profile) => (
+                  <tr
+                    key={profile.id}
+                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                  >
+                    <td className="px-4 py-3 cyber-value">{profile.email ?? "—"}</td>
+                    <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">
+                      {[profile.first_name, profile.last_name].filter(Boolean).join(" ") || "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge active={profile.is_superadmin} color="green" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge active={profile.is_in_study} color="cyan" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge active={profile.is_matrix_admin} color="purple" />
+                    </td>
+                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                      {profile.created_datetime_utc
+                        ? new Date(profile.created_datetime_utc).toLocaleDateString()
+                        : "—"}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="cyber-label p-6 text-center">
+                    {isSearching ? "NO MATCHING USERS" : "NO RECORDS"}
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -81,31 +129,25 @@ export function UsersTable({
       {hasMore && (
         <div className="flex items-center justify-between">
           <p className="cyber-label text-[0.6rem]">
-            SHOWING {users.length} OF {totalCount}
+            SHOWING {users.length} OF {total}
           </p>
           <button
             onClick={handleLoadMore}
-            disabled={loading}
+            disabled={isPending}
             className="cyber-btn rounded px-6 py-2 disabled:opacity-40"
           >
-            {loading ? "LOADING..." : `LOAD MORE (${totalCount - users.length} REMAINING)`}
+            {isPending ? "LOADING..." : `LOAD MORE (${total - users.length} REMAINING)`}
           </button>
         </div>
       )}
-      {!hasMore && totalCount > 50 && (
-        <p className="cyber-label text-[0.6rem] text-center">ALL {totalCount} RECORDS LOADED</p>
+      {!hasMore && !isSearching && total > 50 && (
+        <p className="cyber-label text-[0.6rem] text-center">ALL {total} RECORDS LOADED</p>
       )}
     </div>
   );
 }
 
-function Badge({
-  active,
-  color,
-}: {
-  active: boolean;
-  color: "cyan" | "green" | "purple";
-}) {
+function Badge({ active, color }: { active: boolean; color: "cyan" | "green" | "purple" }) {
   const colors = {
     cyan: active
       ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)]"

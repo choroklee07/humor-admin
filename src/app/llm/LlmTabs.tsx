@@ -12,6 +12,25 @@ type Tab = (typeof TABS)[number];
 const inputCls =
   "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
 
+function ExpandableText({ text, limit = 60, className }: { text: string; limit?: number; className?: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = text.length > limit;
+  return (
+    <span
+      className={`block cursor-pointer select-text ${className ?? ""}`}
+      onClick={() => isLong && setExpanded((v) => !v)}
+      title={isLong && !expanded ? text : undefined}
+    >
+      {expanded || !isLong ? text : text.slice(0, limit) + "…"}
+      {isLong && (
+        <span className="ml-1 text-[rgba(0,212,255,0.4)] hover:text-[#00d4ff] font-mono text-[0.55rem] tracking-wider select-none">
+          {expanded ? "[−]" : "[+]"}
+        </span>
+      )}
+    </span>
+  );
+}
+
 interface Props {
   providers: any[];
   models: any[];
@@ -231,10 +250,10 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
                       <td className="px-4 py-3"><span className="text-[#00d4ff]">{r.humor_flavors?.slug ?? "—"}</span></td>
                       <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">{r.llm_temperature ?? "—"}</td>
                       <td className="px-4 py-3 cyber-value">{r.processing_time_seconds}</td>
-                      <td className="px-4 py-3 max-w-[240px]">
-                        <span className="text-[rgba(200,240,255,0.7)] block truncate" title={r.llm_model_response ?? ""}>
-                          {r.llm_model_response ?? <span className="opacity-30">—</span>}
-                        </span>
+                      <td className="px-4 py-3 w-[280px]">
+                        {r.llm_model_response
+                          ? <ExpandableText text={r.llm_model_response} className="text-[rgba(200,240,255,0.7)]" />
+                          : <span className="opacity-30">—</span>}
                       </td>
                       <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(r.created_datetime_utc).toLocaleString()}</td>
                     </tr>

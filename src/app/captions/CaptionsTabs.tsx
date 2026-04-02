@@ -11,6 +11,26 @@ type Tab = (typeof TABS)[number];
 const inputCls =
   "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
 
+function ExpandableText({ text, limit = 60, className }: { text: string; limit?: number; className?: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const isLong = text.length > limit;
+
+  return (
+    <span
+      className={`block cursor-pointer select-text ${className ?? ""}`}
+      onClick={() => isLong && setExpanded((v) => !v)}
+      title={isLong && !expanded ? text : undefined}
+    >
+      {expanded || !isLong ? text : text.slice(0, limit) + "…"}
+      {isLong && (
+        <span className="ml-1 text-[rgba(0,212,255,0.4)] hover:text-[#00d4ff] font-mono text-[0.55rem] tracking-wider select-none">
+          {expanded ? "[−]" : "[+]"}
+        </span>
+      )}
+    </span>
+  );
+}
+
 interface Props {
   captions: any[];
   captionsTotal: number;
@@ -106,10 +126,10 @@ export function CaptionsTabs({
                   )}
                   {captions.map((caption: any) => (
                     <tr key={caption.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
-                      <td className="px-4 py-3 max-w-[280px]">
-                        <span className="text-[rgba(200,240,255,0.8)] block truncate" title={caption.content ?? ""}>
-                          {caption.content ?? <span className="opacity-30">—</span>}
-                        </span>
+                      <td className="px-4 py-3 w-[300px]">
+                        {caption.content
+                          ? <ExpandableText text={caption.content} className="text-[rgba(200,240,255,0.8)]" />
+                          : <span className="opacity-30">—</span>}
                       </td>
                       <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">{caption.profiles?.email ?? "—"}</td>
                       <td className="px-4 py-3 cyber-value">{caption.like_count}</td>
@@ -181,8 +201,12 @@ export function CaptionsTabs({
                 <tbody>
                   {requests.map((req: any) => (
                     <tr key={req.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
-                      <td className="px-4 py-3 cyber-label">{req.id}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">{req.profiles?.email ?? "—"}</td>
+                      <td className="px-4 py-3 w-[120px]">
+                        <ExpandableText text={String(req.id)} limit={8} className="cyber-label" />
+                      </td>
+                      <td className="px-4 py-3 w-[200px]">
+                        <ExpandableText text={req.profiles?.email ?? "—"} className="text-[rgba(200,240,255,0.7)]" />
+                      </td>
                       <td className="px-4 py-3">
                         {req.images?.url
                           // eslint-disable-next-line @next/next/no-img-element
@@ -255,8 +279,12 @@ export function CaptionsTabs({
                           ? <img src={ex.images.url} alt="" className="w-10 h-10 object-cover rounded border border-[rgba(0,212,255,0.3)]" />
                           : <span className="text-[rgba(200,240,255,0.3)]">—</span>}
                       </td>
-                      <td className="px-4 py-3 max-w-[200px]"><span className="text-[rgba(200,240,255,0.7)] block truncate" title={ex.image_description}>{ex.image_description}</span></td>
-                      <td className="px-4 py-3 max-w-[200px]"><span className="text-[#c8f0ff] block truncate" title={ex.caption}>{ex.caption}</span></td>
+                      <td className="px-4 py-3 w-[220px]">
+                        <ExpandableText text={ex.image_description ?? "—"} className="text-[rgba(200,240,255,0.7)]" />
+                      </td>
+                      <td className="px-4 py-3 w-[220px]">
+                        <ExpandableText text={ex.caption ?? "—"} className="text-[#c8f0ff]" />
+                      </td>
                       <td className="px-4 py-3 cyber-value text-center">{ex.priority}</td>
                       <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(ex.created_datetime_utc).toLocaleDateString()}</td>
                       <td className="px-4 py-3">

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { loadMoreImages, deleteImage } from "./actions";
+import { deleteImage } from "./actions";
 
 type Image = {
   id: string;
@@ -17,21 +16,15 @@ type Image = {
 export function ImagesTable({
   initialData,
   totalCount,
+  currentPage,
 }: {
   initialData: Image[];
   totalCount: number;
+  currentPage: number;
 }) {
-  const [images, setImages] = useState<Image[]>(initialData);
-  const [loading, setLoading] = useState(false);
-
-  const hasMore = images.length < totalCount;
-
-  const handleLoadMore = async () => {
-    setLoading(true);
-    const more = await loadMoreImages(images.length);
-    setImages((prev) => [...prev, ...(more as Image[])]);
-    setLoading(false);
-  };
+  const totalPages = Math.max(1, Math.ceil(totalCount / 50));
+  const from = (currentPage - 1) * 50 + 1;
+  const to = Math.min(currentPage * 50, totalCount);
 
   return (
     <div className="space-y-4">
@@ -48,103 +41,121 @@ export function ImagesTable({
               </tr>
             </thead>
             <tbody>
-              {images.map((image) => (
-                <tr
-                  key={image.id}
-                  className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
-                >
-                  <td className="px-4 py-3">
-                    {image.url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={image.url}
-                        alt=""
-                        className="w-12 h-12 object-cover rounded border border-[rgba(0,212,255,0.2)]"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded border border-[rgba(0,212,255,0.1)] flex items-center justify-center text-[rgba(0,212,255,0.2)]">
-                        —
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 max-w-[200px]">
-                    <span
-                      className="text-[rgba(200,240,255,0.6)] truncate block"
-                      title={image.url ?? ""}
-                    >
-                      {image.url
-                        ? image.url.slice(0, 40) + (image.url.length > 40 ? "…" : "")
-                        : "—"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">
-                    {image.profiles?.email ?? "—"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge active={image.is_public ?? false} color="cyan" />
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge active={image.is_common_use ?? false} color="purple" />
-                  </td>
-                  <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
-                    {new Date(image.created_datetime_utc).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/images/${image.id}/edit`}
-                        className="cyber-btn rounded px-3 py-1 text-[0.6rem]"
+              {initialData.length ? (
+                initialData.map((image) => (
+                  <tr
+                    key={image.id}
+                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                  >
+                    <td className="px-4 py-3">
+                      {image.url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={image.url}
+                          alt=""
+                          className="w-12 h-12 object-cover rounded border border-[rgba(0,212,255,0.2)]"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded border border-[rgba(0,212,255,0.1)] flex items-center justify-center text-[rgba(0,212,255,0.2)]">
+                          —
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 max-w-[200px]">
+                      <span
+                        className="text-[rgba(200,240,255,0.6)] truncate block"
+                        title={image.url ?? ""}
                       >
-                        EDIT
-                      </Link>
-                      <form action={deleteImage}>
-                        <input type="hidden" name="id" value={image.id} />
-                        <button
-                          type="submit"
-                          className="cyber-btn cyber-btn-danger rounded px-3 py-1 text-[0.6rem]"
+                        {image.url
+                          ? image.url.slice(0, 40) + (image.url.length > 40 ? "…" : "")
+                          : "—"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">
+                      {image.profiles?.email ?? "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge active={image.is_public ?? false} color="cyan" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge active={image.is_common_use ?? false} color="purple" />
+                    </td>
+                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                      {new Date(image.created_datetime_utc).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/images/${image.id}/edit`}
+                          className="cyber-btn rounded px-3 py-1 text-[0.6rem]"
                         >
-                          DELETE
-                        </button>
-                      </form>
-                    </div>
-                  </td>
+                          EDIT
+                        </Link>
+                        <form action={deleteImage}>
+                          <input type="hidden" name="id" value={image.id} />
+                          <button
+                            type="submit"
+                            className="cyber-btn cyber-btn-danger rounded px-3 py-1 text-[0.6rem]"
+                          >
+                            DELETE
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="cyber-label p-6 text-center">NO RECORDS</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {hasMore && (
-        <div className="flex items-center justify-between">
-          <p className="cyber-label text-[0.6rem]">
-            SHOWING {images.length} OF {totalCount}
-          </p>
-          <button
-            onClick={handleLoadMore}
-            disabled={loading}
-            className="cyber-btn rounded px-6 py-2 disabled:opacity-40"
-          >
-            {loading ? "LOADING..." : `LOAD MORE (${totalCount - images.length} REMAINING)`}
-          </button>
-        </div>
-      )}
-      {!hasMore && totalCount > 50 && (
-        <p className="cyber-label text-[0.6rem] text-center">
-          ALL {totalCount} RECORDS LOADED
+      {/* Pagination */}
+      <div className="flex items-center justify-between">
+        <p className="cyber-label text-[0.6rem]">
+          SHOWING {totalCount === 0 ? 0 : from}–{to} OF {totalCount}
         </p>
-      )}
+        <div className="flex items-center gap-2">
+          {currentPage > 1 ? (
+            <Link
+              href={`/images?page=${currentPage - 1}`}
+              className="cyber-btn rounded px-4 py-2 text-[0.65rem]"
+            >
+              ← PREV
+            </Link>
+          ) : (
+            <span className="cyber-btn rounded px-4 py-2 text-[0.65rem] opacity-30 pointer-events-none">
+              ← PREV
+            </span>
+          )}
+
+          <span className="cyber-label text-[0.6rem] px-2">
+            PAGE {currentPage} / {totalPages}
+          </span>
+
+          {currentPage < totalPages ? (
+            <Link
+              href={`/images?page=${currentPage + 1}`}
+              className="cyber-btn rounded px-4 py-2 text-[0.65rem]"
+            >
+              NEXT →
+            </Link>
+          ) : (
+            <span className="cyber-btn rounded px-4 py-2 text-[0.65rem] opacity-30 pointer-events-none">
+              NEXT →
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-function Badge({
-  active,
-  color,
-}: {
-  active: boolean;
-  color: "cyan" | "purple";
-}) {
+function Badge({ active, color }: { active: boolean; color: "cyan" | "purple" }) {
   const colors = {
     cyan: active
       ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)]"

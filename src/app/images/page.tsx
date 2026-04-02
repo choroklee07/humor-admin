@@ -3,19 +3,28 @@ import { AdminShell } from "@/components/AdminShell";
 import { createImage, uploadImageViaPipeline } from "./actions";
 import { ImagesTable } from "./ImagesTable";
 
-export default async function ImagesPage() {
+export default async function ImagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+
   const sessionClient = await createClient();
   const {
     data: { user: currentUser },
   } = await sessionClient.auth.getUser();
 
   const supabase = createAdminClient();
+  const from = (page - 1) * 50;
+  const to = from + 49;
   const [{ data: images }, { count: totalCount }] = await Promise.all([
     supabase
       .from("images")
-      .select("id, url, is_public, is_common_use, additional_context, created_datetime_utc, profiles(email)")
+      .select("id, url, is_public, is_common_use, additional_context, created_datetime_utc, profiles!profile_id(email)")
       .order("created_datetime_utc", { ascending: false })
-      .range(0, 49),
+      .range(from, to),
     supabase.from("images").select("*", { count: "exact", head: true }),
   ]);
 
@@ -108,7 +117,7 @@ export default async function ImagesPage() {
         </div>
 
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <ImagesTable initialData={(images ?? []) as any} totalCount={totalCount ?? 0} />
+        <ImagesTable initialData={(images ?? []) as any} totalCount={totalCount ?? 0} currentPage={page} />
       </div>
     </AdminShell>
   );

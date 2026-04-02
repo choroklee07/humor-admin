@@ -17,3 +17,26 @@ export async function deleteDomain(formData: FormData) {
   await supabase.from("allowed_signup_domains").delete().eq("id", id);
   revalidatePath("/allowed-domains");
 }
+
+export async function createEmail(formData: FormData) {
+  const supabase = createAdminClient();
+  await (supabase as any).from("whitelist_email_addresses").insert({
+    email_address: (formData.get("email") as string).toLowerCase().trim(),
+  });
+  revalidatePath("/allowed-domains");
+}
+
+export async function updateEmail(formData: FormData) {
+  const supabase = createAdminClient();
+  const id = formData.get("id") as string;
+  const email_address = (formData.get("email") as string).toLowerCase().trim();
+  await (supabase as any).from("whitelist_email_addresses").update({ email_address }).eq("id", id);
+  revalidatePath("/allowed-domains");
+}
+
+export async function deleteEmail(formData: FormData) {
+  const supabase = createAdminClient();
+  const id = formData.get("id") as string;
+  await (supabase as any).from("whitelist_email_addresses").delete().eq("id", id);
+  revalidatePath("/allowed-domains");
+}
