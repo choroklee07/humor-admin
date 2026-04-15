@@ -3,8 +3,7 @@ import { AdminShell } from "@/components/AdminShell";
 import { createModel, deleteModel } from "./actions";
 import Link from "next/link";
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 export default async function LlmModelsPage() {
   const sessionClient = await createClient();
@@ -72,7 +71,7 @@ export default async function LlmModelsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "NAME", "PROVIDER MODEL ID", "PROVIDER", "TEMP", "CREATED", "ACTIONS"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}
@@ -84,26 +83,26 @@ export default async function LlmModelsPage() {
                 {models?.map((m: any) => (
                   <tr
                     key={m.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3 cyber-label">{m.id}</td>
-                    <td className="px-4 py-3 text-[#c8f0ff] font-bold">{m.name}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.6)]">{m.provider_model_id}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">
+                    <td className="px-4 py-3 t-bright font-bold">{m.name}</td>
+                    <td className="px-4 py-3 t-body">{m.provider_model_id}</td>
+                    <td className="px-4 py-3 t-body">
                       {m.llm_providers?.name ?? "—"}
                     </td>
                     <td className="px-4 py-3">
                       <span
                         className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border ${
                           m.is_temperature_supported
-                            ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)]"
-                            : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)]"
+                            ? "border-[#00d4ff] text-[#00d4ff] bg-active"
+                            : "border-input t-inactive"
                         }`}
                       >
                         {m.is_temperature_supported ? "YES" : "NO"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-muted">
                       {new Date(m.created_datetime_utc).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">

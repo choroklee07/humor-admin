@@ -48,7 +48,7 @@ export default async function EditImagePage({
           <img
             src={image.url}
             alt=""
-            className="w-48 h-48 object-cover rounded border border-[rgba(0,212,255,0.3)]"
+            className="w-48 h-48 object-cover rounded border border-img"
           />
         )}
 
@@ -60,7 +60,7 @@ export default async function EditImagePage({
               <input
                 name="url"
                 defaultValue={image.url ?? ""}
-                className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]"
+                className="w-full input-cyber"
               />
             </div>
             <div className="space-y-1">
@@ -69,7 +69,7 @@ export default async function EditImagePage({
                 name="additional_context"
                 defaultValue={image.additional_context ?? ""}
                 rows={3}
-                className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)] resize-none"
+                className="w-full input-cyber resize-none"
               />
             </div>
             <div className="flex items-center gap-6">

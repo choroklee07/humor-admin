@@ -26,7 +26,7 @@ export default async function HumorFlavorsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "SLUG", "DESCRIPTION", "CREATED"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}
@@ -38,18 +38,18 @@ export default async function HumorFlavorsPage() {
                 {flavors?.map((flavor: any) => (
                   <tr
                     key={flavor.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3 cyber-label">{flavor.id}</td>
                     <td className="px-4 py-3">
                       <span className="text-[#00d4ff] font-bold tracking-wider">{flavor.slug}</span>
                     </td>
                     <td className="px-4 py-3 max-w-[400px]">
-                      <span className="text-[rgba(200,240,255,0.7)] block truncate" title={flavor.description ?? ""}>
+                      <span className="t-body block truncate" title={flavor.description ?? ""}>
                         {flavor.description ?? <span className="opacity-30">—</span>}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-muted">
                       {new Date(flavor.created_datetime_utc).toLocaleDateString()}
                     </td>
                   </tr>

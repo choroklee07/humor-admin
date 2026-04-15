@@ -29,7 +29,7 @@ export default async function HumorFlavorStepsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "FLAVOR", "ORDER", "STEP TYPE", "MODEL", "TEMP", "DESCRIPTION", "CREATED"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}
@@ -41,31 +41,31 @@ export default async function HumorFlavorStepsPage() {
                 {steps?.map((step: any) => (
                   <tr
                     key={step.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3 cyber-label">{step.id}</td>
                     <td className="px-4 py-3">
                       <span className="text-[#00d4ff] font-bold">{step.humor_flavors?.slug ?? "—"}</span>
                     </td>
                     <td className="px-4 py-3 cyber-value text-center">{step.order_by}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.6)]">
+                    <td className="px-4 py-3 t-body">
                       {step.humor_flavor_step_types?.slug ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">
+                    <td className="px-4 py-3 t-body">
                       {step.llm_models?.name ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">
+                    <td className="px-4 py-3 t-dim">
                       {step.llm_temperature ?? "—"}
                     </td>
                     <td className="px-4 py-3 max-w-[240px]">
                       <span
-                        className="text-[rgba(200,240,255,0.7)] block truncate"
+                        className="t-body block truncate"
                         title={step.description ?? ""}
                       >
                         {step.description ?? <span className="opacity-30">—</span>}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-muted">
                       {new Date(step.created_datetime_utc).toLocaleDateString()}
                     </td>
                   </tr>

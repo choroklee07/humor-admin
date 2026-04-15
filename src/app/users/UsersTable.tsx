@@ -3,8 +3,7 @@
 import { useState, useTransition } from "react";
 import { loadUsers, searchUsers, type MergedUser } from "./actions";
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 export function UsersTable({
   initialData,
@@ -69,7 +68,7 @@ export function UsersTable({
           </span>
         )}
         {isSearching && !isPending && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgba(0,212,255,0.4)] font-mono text-[0.6rem]">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 t-inactive font-mono text-[0.6rem]">
             {users.length} RESULTS
           </span>
         )}
@@ -79,7 +78,7 @@ export function UsersTable({
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="border-b border-[rgba(0,212,255,0.15)]">
+              <tr className="border-b border-table">
                 {["EMAIL", "NAME", "SUPERADMIN", "STUDY", "MATRIX ADMIN", "CREATED"].map((h) => (
                   <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                     {h}
@@ -92,10 +91,10 @@ export function UsersTable({
                 users.map((profile) => (
                   <tr
                     key={profile.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3 cyber-value">{profile.email ?? "—"}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">
+                    <td className="px-4 py-3 t-body">
                       {[profile.first_name, profile.last_name].filter(Boolean).join(" ") || "—"}
                     </td>
                     <td className="px-4 py-3">
@@ -107,7 +106,7 @@ export function UsersTable({
                     <td className="px-4 py-3">
                       <Badge active={profile.is_matrix_admin} color="purple" />
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-muted">
                       {profile.created_datetime_utc
                         ? new Date(profile.created_datetime_utc).toLocaleDateString()
                         : "—"}
@@ -150,14 +149,14 @@ export function UsersTable({
 function Badge({ active, color }: { active: boolean; color: "cyan" | "green" | "purple" }) {
   const colors = {
     cyan: active
-      ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)]"
-      : "border-[rgba(0,212,255,0.15)] text-[rgba(0,212,255,0.25)]",
+      ? "border-[#00d4ff] text-[#00d4ff] bg-active"
+      : "border-table text-[rgba(0,212,255,0.25)]",
     green: active
       ? "border-[#00ff88] text-[#00ff88] bg-[rgba(0,255,136,0.08)]"
-      : "border-[rgba(0,212,255,0.15)] text-[rgba(0,212,255,0.25)]",
+      : "border-table text-[rgba(0,212,255,0.25)]",
     purple: active
       ? "border-[#bf00ff] text-[#bf00ff] bg-[rgba(191,0,255,0.08)]"
-      : "border-[rgba(0,212,255,0.15)] text-[rgba(0,212,255,0.25)]",
+      : "border-table text-[rgba(0,212,255,0.25)]",
   };
   return (
     <span className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border ${colors[color]}`}>

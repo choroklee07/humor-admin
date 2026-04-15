@@ -3,8 +3,7 @@ import { AdminShell } from "@/components/AdminShell";
 import { createCaptionExample, deleteCaptionExample } from "./actions";
 import Link from "next/link";
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 export default async function CaptionExamplesPage() {
   const sessionClient = await createClient();
@@ -65,7 +64,7 @@ export default async function CaptionExamplesPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["IMG", "DESCRIPTION", "CAPTION", "PRIORITY", "CREATED", "ACTIONS"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}
@@ -77,28 +76,28 @@ export default async function CaptionExamplesPage() {
                 {examples?.map((ex: any) => (
                   <tr
                     key={ex.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3">
                       {ex.images?.url ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={ex.images.url} alt="" className="w-10 h-10 object-cover rounded border border-[rgba(0,212,255,0.3)]" />
+                        <img src={ex.images.url} alt="" className="w-10 h-10 object-cover rounded border border-img" />
                       ) : (
-                        <span className="text-[rgba(200,240,255,0.3)]">—</span>
+                        <span className="t-faint">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3 max-w-[200px]">
-                      <span className="text-[rgba(200,240,255,0.7)] block truncate" title={ex.image_description}>
+                      <span className="t-body block truncate" title={ex.image_description}>
                         {ex.image_description}
                       </span>
                     </td>
                     <td className="px-4 py-3 max-w-[200px]">
-                      <span className="text-[#c8f0ff] block truncate" title={ex.caption}>
+                      <span className="t-bright block truncate" title={ex.caption}>
                         {ex.caption}
                       </span>
                     </td>
                     <td className="px-4 py-3 cyber-value text-center">{ex.priority}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-muted">
                       {new Date(ex.created_datetime_utc).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">

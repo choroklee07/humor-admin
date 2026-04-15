@@ -8,8 +8,7 @@ import { createCaptionExample, deleteCaptionExample } from "../caption-examples/
 const TABS = ["CAPTIONS", "REQUESTS", "EXAMPLES"] as const;
 type Tab = (typeof TABS)[number];
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 function ExpandableText({ text, limit = 60, className }: { text: string; limit?: number; className?: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -23,7 +22,7 @@ function ExpandableText({ text, limit = 60, className }: { text: string; limit?:
     >
       {expanded || !isLong ? text : text.slice(0, limit) + "…"}
       {isLong && (
-        <span className="ml-1 text-[rgba(0,212,255,0.4)] hover:text-[#00d4ff] font-mono text-[0.55rem] tracking-wider select-none">
+        <span className="ml-1 t-inactive hover:text-[#00d4ff] font-mono text-[0.55rem] tracking-wider select-none">
           {expanded ? "[−]" : "[+]"}
         </span>
       )}
@@ -73,8 +72,8 @@ export function CaptionsTabs({
             onClick={() => setActive(tab)}
             className={`px-5 py-2 font-mono text-[0.65rem] tracking-widest rounded transition-all border ${
               active === tab
-                ? "bg-[rgba(0,212,255,0.12)] text-[#00d4ff] border-[rgba(0,212,255,0.5)] shadow-[0_0_10px_rgba(0,212,255,0.2)]"
-                : "text-[rgba(0,212,255,0.35)] border-[rgba(0,212,255,0.15)] hover:text-[rgba(0,212,255,0.6)] hover:border-[rgba(0,212,255,0.3)]"
+                ? "bg-tab-active cyber-text border-tab-active shadow-[0_0_10px_rgba(0,212,255,0.2)]"
+                : "t-inactive border-table hover-t-active hover:border-img"
             }`}
           >
             {tab}
@@ -98,7 +97,7 @@ export function CaptionsTabs({
               name="q"
               defaultValue={q}
               placeholder="Search by email or name..."
-              className="flex-1 bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)]"
+              className="flex-1 input-cyber"
             />
             <button type="submit" className="cyber-btn rounded px-4 py-2 text-[0.65rem]">SEARCH</button>
             {q && (
@@ -110,7 +109,7 @@ export function CaptionsTabs({
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["CONTENT", "AUTHOR", "LIKES", "PUBLIC", "FEATURED", "CREATED", "ACTIONS"].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -119,25 +118,25 @@ export function CaptionsTabs({
                 <tbody>
                   {captions.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="px-4 py-6 text-center text-[rgba(200,240,255,0.3)] font-mono text-xs">
+                      <td colSpan={7} className="px-4 py-6 text-center t-faint font-mono text-xs">
                         NO CAPTIONS FOUND
                       </td>
                     </tr>
                   )}
                   {captions.map((caption: any) => (
-                    <tr key={caption.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                    <tr key={caption.id} className="border-b border-row-divider hover-row transition-colors">
                       <td className="px-4 py-3 w-[300px]">
                         {caption.content
-                          ? <ExpandableText text={caption.content} className="text-[rgba(200,240,255,0.8)]" />
+                          ? <ExpandableText text={caption.content} className="t-body" />
                           : <span className="opacity-30">—</span>}
                       </td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">{caption.profiles?.email ?? "—"}</td>
+                      <td className="px-4 py-3 t-dim">{caption.profiles?.email ?? "—"}</td>
                       <td className="px-4 py-3 cyber-value">{caption.like_count}</td>
                       <td className="px-4 py-3">
                         <form action={togglePublic} className="inline">
                           <input type="hidden" name="id" value={caption.id} />
                           <input type="hidden" name="value" value={String(!caption.is_public)} />
-                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_public ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)] hover:bg-[rgba(0,212,255,0.15)]" : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)] hover:border-[rgba(0,212,255,0.4)]"}`}>
+                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_public ? "border-[#00d4ff] text-[#00d4ff] bg-active hover-bg-active" : "border-input t-inactive hover:border-tab-active"}`}>
                             {caption.is_public ? "YES" : "NO"}
                           </button>
                         </form>
@@ -146,12 +145,12 @@ export function CaptionsTabs({
                         <form action={toggleFeatured} className="inline">
                           <input type="hidden" name="id" value={caption.id} />
                           <input type="hidden" name="value" value={String(!caption.is_featured)} />
-                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_featured ? "border-[#00ff88] text-[#00ff88] bg-[rgba(0,255,136,0.08)] hover:bg-[rgba(0,255,136,0.15)]" : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)] hover:border-[rgba(0,212,255,0.4)]"}`}>
+                          <button type="submit" className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border transition-all cursor-pointer ${caption.is_featured ? "border-[#00ff88] text-[#00ff88] bg-[rgba(0,255,136,0.08)] hover:bg-[rgba(0,255,136,0.15)]" : "border-input t-inactive hover:border-tab-active"}`}>
                             {caption.is_featured ? "YES" : "NO"}
                           </button>
                         </form>
                       </td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                      <td className="px-4 py-3 t-muted">
                         {new Date(caption.created_datetime_utc).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-3">
@@ -192,7 +191,7 @@ export function CaptionsTabs({
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["ID", "USER", "IMAGE", "CREATED"].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -200,20 +199,20 @@ export function CaptionsTabs({
                 </thead>
                 <tbody>
                   {requests.map((req: any) => (
-                    <tr key={req.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                    <tr key={req.id} className="border-b border-row-divider hover-row transition-colors">
                       <td className="px-4 py-3 w-[120px]">
                         <ExpandableText text={String(req.id)} limit={8} className="cyber-label" />
                       </td>
                       <td className="px-4 py-3 w-[200px]">
-                        <ExpandableText text={req.profiles?.email ?? "—"} className="text-[rgba(200,240,255,0.7)]" />
+                        <ExpandableText text={req.profiles?.email ?? "—"} className="t-body" />
                       </td>
                       <td className="px-4 py-3">
                         {req.images?.url
                           // eslint-disable-next-line @next/next/no-img-element
-                          ? <img src={req.images.url} alt="" className="w-10 h-10 object-cover rounded border border-[rgba(0,212,255,0.3)]" />
-                          : <span className="text-[rgba(200,240,255,0.3)]">—</span>}
+                          ? <img src={req.images.url} alt="" className="w-10 h-10 object-cover rounded border border-img" />
+                          : <span className="t-faint">—</span>}
                       </td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(req.created_datetime_utc).toLocaleString()}</td>
+                      <td className="px-4 py-3 t-muted">{new Date(req.created_datetime_utc).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -264,7 +263,7 @@ export function CaptionsTabs({
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["IMG", "DESCRIPTION", "CAPTION", "PRIORITY", "CREATED", "ACTIONS"].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -272,21 +271,21 @@ export function CaptionsTabs({
                 </thead>
                 <tbody>
                   {examples.map((ex: any) => (
-                    <tr key={ex.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                    <tr key={ex.id} className="border-b border-row-divider hover-row transition-colors">
                       <td className="px-4 py-3">
                         {ex.images?.url
                           // eslint-disable-next-line @next/next/no-img-element
-                          ? <img src={ex.images.url} alt="" className="w-10 h-10 object-cover rounded border border-[rgba(0,212,255,0.3)]" />
-                          : <span className="text-[rgba(200,240,255,0.3)]">—</span>}
+                          ? <img src={ex.images.url} alt="" className="w-10 h-10 object-cover rounded border border-img" />
+                          : <span className="t-faint">—</span>}
                       </td>
                       <td className="px-4 py-3 w-[220px]">
-                        <ExpandableText text={ex.image_description ?? "—"} className="text-[rgba(200,240,255,0.7)]" />
+                        <ExpandableText text={ex.image_description ?? "—"} className="t-body" />
                       </td>
                       <td className="px-4 py-3 w-[220px]">
-                        <ExpandableText text={ex.caption ?? "—"} className="text-[#c8f0ff]" />
+                        <ExpandableText text={ex.caption ?? "—"} className="t-bright" />
                       </td>
                       <td className="px-4 py-3 cyber-value text-center">{ex.priority}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(ex.created_datetime_utc).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 t-muted">{new Date(ex.created_datetime_utc).toLocaleDateString()}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
                           <Link href={`/caption-examples/${ex.id}/edit`} className="cyber-btn rounded px-3 py-1 text-[0.6rem] inline-block">EDIT</Link>

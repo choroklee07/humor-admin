@@ -23,8 +23,7 @@ export default async function EditProviderPage({
 
   if (!provider) redirect("/llm-providers");
 
-  const inputCls =
-    "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+  const inputCls = "w-full input-cyber";
 
   return (
     <AdminShell user={{ email: currentUser?.email }}>

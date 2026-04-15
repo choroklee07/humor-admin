@@ -27,7 +27,7 @@ export default async function HumorMixPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "FLAVOR", "DESCRIPTION", "CAPTION COUNT", ""].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}
@@ -39,7 +39,7 @@ export default async function HumorMixPage() {
                 {mix?.map((row: any) => (
                   <tr
                     key={row.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3 cyber-label">{row.id}</td>
                     <td className="px-4 py-3">
@@ -49,7 +49,7 @@ export default async function HumorMixPage() {
                     </td>
                     <td className="px-4 py-3 max-w-[300px]">
                       <span
-                        className="text-[rgba(200,240,255,0.6)] block truncate"
+                        className="t-body block truncate"
                         title={row.humor_flavors?.description ?? ""}
                       >
                         {row.humor_flavors?.description ?? <span className="opacity-30">—</span>}
@@ -63,7 +63,7 @@ export default async function HumorMixPage() {
                           name="caption_count"
                           defaultValue={row.caption_count}
                           min={0}
-                          className="w-20 bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-2 py-1 font-mono text-xs text-[#c8f0ff] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]"
+                          className="w-20 input-cyber px-2 py-1"
                         />
                         <button type="submit" className="cyber-btn rounded px-3 py-1 text-[0.6rem]">
                           SAVE

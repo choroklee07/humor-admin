@@ -210,7 +210,7 @@ export default async function DashboardPage() {
                   {[0, 50, 100].map((pct) => (
                     <div
                       key={pct}
-                      className="absolute left-0 right-0 h-px bg-[rgba(0,212,255,0.08)]"
+                      className="absolute left-0 right-0 h-px bg-active"
                       style={{ top: `${pct}%` }}
                     />
                   ))}

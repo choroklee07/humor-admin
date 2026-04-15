@@ -3,8 +3,7 @@ import { AdminShell } from "@/components/AdminShell";
 import { createProvider, deleteProvider } from "./actions";
 import Link from "next/link";
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 export default async function LlmProvidersPage() {
   const sessionClient = await createClient();
@@ -46,7 +45,7 @@ export default async function LlmProvidersPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "NAME", "CREATED", "ACTIONS"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}
@@ -58,11 +57,11 @@ export default async function LlmProvidersPage() {
                 {providers?.map((p: any) => (
                   <tr
                     key={p.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3 cyber-label">{p.id}</td>
-                    <td className="px-4 py-3 text-[#c8f0ff] font-bold">{p.name}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-bright font-bold">{p.name}</td>
+                    <td className="px-4 py-3 t-muted">
                       {new Date(p.created_datetime_utc).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">

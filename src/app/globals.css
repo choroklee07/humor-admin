@@ -9,6 +9,67 @@
   --cyber-border: rgba(0, 212, 255, 0.3);
   --cyber-glow: 0 0 8px rgba(0, 212, 255, 0.6), 0 0 20px rgba(0, 212, 255, 0.2);
   --cyber-glow-green: 0 0 8px rgba(0, 255, 136, 0.6), 0 0 20px rgba(0, 255, 136, 0.2);
+  --cyber-label-color: rgba(0, 212, 255, 0.5);
+  --cyber-btn-hover-bg: rgba(0, 212, 255, 0.1);
+  --header-bg: rgba(0, 8, 18, 0.7);
+  --sidebar-bg: rgba(0, 8, 18, 0.7);
+  --header-border: rgba(0, 212, 255, 0.12);
+  --sidebar-border: rgba(0, 212, 255, 0.12);
+  --grid-line: rgba(0, 212, 255, 0.03);
+  --card-bg: rgba(0, 20, 35, 0.8);
+  /* Semantic tokens */
+  --t-body: rgba(200, 240, 255, 0.85);
+  --t-dim: rgba(200, 240, 255, 0.5);
+  --t-muted: rgba(200, 240, 255, 0.4);
+  --t-faint: rgba(200, 240, 255, 0.3);
+  --inactive-text: rgba(0, 212, 255, 0.35);
+  --inactive-hover-text: rgba(0, 212, 255, 0.7);
+  --row-hover-bg: rgba(0, 212, 255, 0.03);
+  --active-bg: rgba(0, 212, 255, 0.08);
+  --tab-active-bg: rgba(0, 212, 255, 0.12);
+  --input-bg: rgba(0, 212, 255, 0.05);
+  --input-border: rgba(0, 212, 255, 0.2);
+  --input-focus-border: rgba(0, 212, 255, 0.6);
+  --table-border: rgba(0, 212, 255, 0.15);
+  --row-border: rgba(0, 212, 255, 0.06);
+  --tab-active-border: rgba(0, 212, 255, 0.5);
+  --img-border: rgba(0, 212, 255, 0.3);
+}
+
+[data-theme="light"] {
+  --background: #e8f2fc;
+  --foreground: #03090f;
+  --cyber-cyan: #004f7a;
+  --cyber-green: #003d1f;
+  --cyber-purple: #5c007a;
+  --cyber-border: rgba(0, 79, 122, 0.4);
+  --cyber-glow: 0 0 4px rgba(0, 79, 122, 0.25), 0 0 10px rgba(0, 79, 122, 0.08);
+  --cyber-glow-green: 0 0 4px rgba(0, 61, 31, 0.25), 0 0 10px rgba(0, 61, 31, 0.08);
+  --cyber-label-color: rgba(0, 60, 100, 0.65);
+  --cyber-btn-hover-bg: rgba(0, 79, 122, 0.1);
+  --header-bg: rgba(210, 230, 248, 0.9);
+  --sidebar-bg: rgba(210, 230, 248, 0.9);
+  --header-border: rgba(0, 79, 122, 0.2);
+  --sidebar-border: rgba(0, 79, 122, 0.2);
+  --grid-line: rgba(0, 79, 122, 0.07);
+  --card-bg: rgba(255, 255, 255, 0.8);
+  /* Semantic tokens */
+  --t-body: rgba(3, 9, 15, 0.88);
+  --t-dim: rgba(3, 9, 15, 0.65);
+  --t-muted: rgba(3, 9, 15, 0.5);
+  --t-faint: rgba(3, 9, 15, 0.4);
+  --inactive-text: rgba(0, 50, 80, 0.65);
+  --inactive-hover-text: rgba(0, 50, 80, 0.95);
+  --row-hover-bg: rgba(0, 79, 122, 0.05);
+  --active-bg: rgba(0, 79, 122, 0.1);
+  --tab-active-bg: rgba(0, 79, 122, 0.13);
+  --input-bg: rgba(0, 79, 122, 0.04);
+  --input-border: rgba(0, 79, 122, 0.3);
+  --input-focus-border: rgba(0, 79, 122, 0.7);
+  --table-border: rgba(0, 79, 122, 0.2);
+  --row-border: rgba(0, 79, 122, 0.1);
+  --tab-active-border: rgba(0, 79, 122, 0.55);
+  --img-border: rgba(0, 79, 122, 0.35);
 }
 
 @theme inline {
@@ -23,8 +84,8 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-mono), monospace;
   background-image:
-    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -45,7 +106,7 @@ body::before {
 }
 
 .cyber-card {
-  background: rgba(0, 20, 35, 0.8);
+  background: var(--card-bg);
   border: 1px solid var(--cyber-border);
   box-shadow: var(--cyber-glow), inset 0 0 30px rgba(0, 212, 255, 0.03);
   backdrop-filter: blur(8px);
@@ -80,7 +141,7 @@ body::before {
 }
 
 .cyber-btn:hover {
-  background: rgba(0, 212, 255, 0.1);
+  background: var(--cyber-btn-hover-bg);
   box-shadow: 0 0 16px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.3);
 }
 
@@ -97,7 +158,7 @@ body::before {
 }
 
 .cyber-label {
-  color: rgba(0, 212, 255, 0.5);
+  color: var(--cyber-label-color);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -132,4 +193,48 @@ body::before {
   bottom: -1px;
   right: -1px;
   border-width: 0 2px 2px 0;
+}
+
+/* ── Semantic text utilities ── */
+.t-body     { color: var(--t-body); }
+.t-dim      { color: var(--t-dim); }
+.t-muted    { color: var(--t-muted); }
+.t-faint    { color: var(--t-faint); }
+.t-bright   { color: var(--foreground); }
+.t-inactive { color: var(--inactive-text); }
+
+/* ── Semantic background utilities ── */
+.bg-active     { background-color: var(--active-bg); }
+.bg-tab-active { background-color: var(--tab-active-bg); }
+
+/* ── Semantic border utilities ── */
+.border-table     { border-color: var(--table-border); }
+.border-row-divider { border-color: var(--row-border); }
+.border-input     { border-color: var(--input-border); }
+.border-tab-active { border-color: var(--tab-active-border); }
+.border-img       { border-color: var(--img-border); }
+
+/* ── Hover utilities ── */
+.hover-row { transition: background-color 0.15s; }
+.hover-row:hover { background-color: var(--row-hover-bg); }
+.hover-t-active:hover { color: var(--inactive-hover-text); }
+.hover-bg-active:hover { background-color: var(--active-bg); }
+
+/* ── Input ── */
+.input-cyber {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input-cyber::placeholder { color: var(--inactive-text); opacity: 0.8; }
+.input-cyber:focus {
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 8px rgba(0, 79, 122, 0.25);
 }

@@ -9,8 +9,7 @@ import { PromptChainRow } from "../llm-prompt-chains/PromptChainRow";
 const TABS = ["PROVIDERS", "MODELS", "PROMPT CHAINS", "RESPONSES"] as const;
 type Tab = (typeof TABS)[number];
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 function ExpandableText({ text, limit = 60, className }: { text: string; limit?: number; className?: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -23,7 +22,7 @@ function ExpandableText({ text, limit = 60, className }: { text: string; limit?:
     >
       {expanded || !isLong ? text : text.slice(0, limit) + "…"}
       {isLong && (
-        <span className="ml-1 text-[rgba(0,212,255,0.4)] hover:text-[#00d4ff] font-mono text-[0.55rem] tracking-wider select-none">
+        <span className="ml-1 t-inactive hover:text-[#00d4ff] font-mono text-[0.55rem] tracking-wider select-none">
           {expanded ? "[−]" : "[+]"}
         </span>
       )}
@@ -54,8 +53,8 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
             onClick={() => setActive(tab)}
             className={`px-5 py-2 font-mono text-[0.65rem] tracking-widest rounded transition-all border ${
               active === tab
-                ? "bg-[rgba(0,212,255,0.12)] text-[#00d4ff] border-[rgba(0,212,255,0.5)] shadow-[0_0_10px_rgba(0,212,255,0.2)]"
-                : "text-[rgba(0,212,255,0.35)] border-[rgba(0,212,255,0.15)] hover:text-[rgba(0,212,255,0.6)] hover:border-[rgba(0,212,255,0.3)]"
+                ? "bg-tab-active cyber-text border-tab-active shadow-[0_0_10px_rgba(0,212,255,0.2)]"
+                : "t-inactive border-table hover-t-active hover:border-img"
             }`}
           >
             {tab}
@@ -86,7 +85,7 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["ID", "NAME", "CREATED", "ACTIONS"].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -94,10 +93,10 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
                 </thead>
                 <tbody>
                   {providers.map((p: any) => (
-                    <tr key={p.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                    <tr key={p.id} className="border-b border-row-divider hover-row transition-colors">
                       <td className="px-4 py-3 cyber-label">{p.id}</td>
-                      <td className="px-4 py-3 text-[#c8f0ff] font-bold">{p.name}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(p.created_datetime_utc).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 t-bright font-bold">{p.name}</td>
+                      <td className="px-4 py-3 t-muted">{new Date(p.created_datetime_utc).toLocaleDateString()}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
                           <Link href={`/llm-providers/${p.id}/edit`} className="cyber-btn rounded px-3 py-1 text-[0.6rem] inline-block">EDIT</Link>
@@ -160,7 +159,7 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["ID", "NAME", "PROVIDER MODEL ID", "PROVIDER", "TEMP", "CREATED", "ACTIONS"].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -168,17 +167,17 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
                 </thead>
                 <tbody>
                   {models.map((m: any) => (
-                    <tr key={m.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                    <tr key={m.id} className="border-b border-row-divider hover-row transition-colors">
                       <td className="px-4 py-3 cyber-label">{m.id}</td>
-                      <td className="px-4 py-3 text-[#c8f0ff] font-bold">{m.name}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.6)]">{m.provider_model_id}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">{m.llm_providers?.name ?? "—"}</td>
+                      <td className="px-4 py-3 t-bright font-bold">{m.name}</td>
+                      <td className="px-4 py-3 t-body">{m.provider_model_id}</td>
+                      <td className="px-4 py-3 t-body">{m.llm_providers?.name ?? "—"}</td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border ${m.is_temperature_supported ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)]" : "border-[rgba(0,212,255,0.2)] text-[rgba(0,212,255,0.3)]"}`}>
+                        <span className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border ${m.is_temperature_supported ? "border-[#00d4ff] text-[#00d4ff] bg-active" : "border-input t-inactive"}`}>
                           {m.is_temperature_supported ? "YES" : "NO"}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(m.created_datetime_utc).toLocaleDateString()}</td>
+                      <td className="px-4 py-3 t-muted">{new Date(m.created_datetime_utc).toLocaleDateString()}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
                           <Link href={`/llm-models/${m.id}/edit`} className="cyber-btn rounded px-3 py-1 text-[0.6rem] inline-block">EDIT</Link>
@@ -208,7 +207,7 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["ID", "CAPTION REQUEST ID", "STEPS", "CREATED", ""].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -236,7 +235,7 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["USER", "MODEL", "FLAVOR", "TEMP", "TIME (s)", "RESPONSE", "CREATED"].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -244,18 +243,18 @@ export function LlmTabs({ providers, models, chains, responsesByChain, responses
                 </thead>
                 <tbody>
                   {responses.map((r: any) => (
-                    <tr key={r.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.6)]">{r.profiles?.email ?? "—"}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.8)]">{r.llm_models?.name ?? "—"}</td>
+                    <tr key={r.id} className="border-b border-row-divider hover-row transition-colors">
+                      <td className="px-4 py-3 t-body">{r.profiles?.email ?? "—"}</td>
+                      <td className="px-4 py-3 t-body">{r.llm_models?.name ?? "—"}</td>
                       <td className="px-4 py-3"><span className="text-[#00d4ff]">{r.humor_flavors?.slug ?? "—"}</span></td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">{r.llm_temperature ?? "—"}</td>
+                      <td className="px-4 py-3 t-dim">{r.llm_temperature ?? "—"}</td>
                       <td className="px-4 py-3 cyber-value">{r.processing_time_seconds}</td>
                       <td className="px-4 py-3 w-[280px]">
                         {r.llm_model_response
-                          ? <ExpandableText text={r.llm_model_response} className="text-[rgba(200,240,255,0.7)]" />
+                          ? <ExpandableText text={r.llm_model_response} className="t-body" />
                           : <span className="opacity-30">—</span>}
                       </td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(r.created_datetime_utc).toLocaleString()}</td>
+                      <td className="px-4 py-3 t-muted">{new Date(r.created_datetime_utc).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>

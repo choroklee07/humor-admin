@@ -3,8 +3,7 @@ import { AdminShell } from "@/components/AdminShell";
 import { createTerm } from "./actions";
 import { TermRow } from "./TermRow";
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 export default async function TermsPage() {
   const sessionClient = await createClient();
@@ -67,7 +66,7 @@ export default async function TermsPage() {
                   name="priority"
                   type="number"
                   defaultValue={0}
-                  className="w-24 bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] focus:outline-none focus:border-[rgba(0,212,255,0.6)]"
+                  className="w-24 input-cyber"
                 />
               </div>
               <div className="pt-5">
@@ -84,7 +83,7 @@ export default async function TermsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["TERM", "TYPE", "DEFINITION", "PRIORITY", "CREATED", "ACTIONS"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}

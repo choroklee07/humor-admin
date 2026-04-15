@@ -30,7 +30,7 @@ export default async function CaptionRequestsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "USER", "IMAGE", "CREATED"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                       {h}
@@ -42,10 +42,10 @@ export default async function CaptionRequestsPage() {
                 {requests?.map((req: any) => (
                   <tr
                     key={req.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3 cyber-label">{req.id}</td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">
+                    <td className="px-4 py-3 t-body">
                       {req.profiles?.email ?? "—"}
                     </td>
                     <td className="px-4 py-3">
@@ -54,13 +54,13 @@ export default async function CaptionRequestsPage() {
                         <img
                           src={req.images.url}
                           alt=""
-                          className="w-10 h-10 object-cover rounded border border-[rgba(0,212,255,0.3)]"
+                          className="w-10 h-10 object-cover rounded border border-img"
                         />
                       ) : (
-                        <span className="text-[rgba(200,240,255,0.3)]">—</span>
+                        <span className="t-faint">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-muted">
                       {new Date(req.created_datetime_utc).toLocaleString()}
                     </td>
                   </tr>

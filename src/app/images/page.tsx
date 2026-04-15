@@ -49,7 +49,7 @@ export default async function ImagesPage({
                   type="file"
                   required
                   accept="image/*"
-                  className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] file:mr-3 file:py-1 file:px-3 file:rounded file:border file:border-[rgba(0,212,255,0.3)] file:bg-[rgba(0,212,255,0.08)] file:text-[#00d4ff] file:font-mono file:text-[0.6rem] file:tracking-wider cursor-pointer focus:outline-none focus:border-[rgba(0,212,255,0.6)]"
+                  className="w-full input-cyber file:mr-3 file:py-1 file:px-3 file:rounded file:border file:border-img file:bg-active file:text-[#00d4ff] file:font-mono file:text-[0.6rem] file:tracking-wider cursor-pointer"
                 />
               </div>
               <div className="space-y-1">
@@ -57,7 +57,7 @@ export default async function ImagesPage({
                 <input
                   name="additional_context"
                   placeholder="Optional description..."
-                  className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]"
+                  className="w-full input-cyber"
                 />
               </div>
             </div>
@@ -88,7 +88,7 @@ export default async function ImagesPage({
                   name="url"
                   required
                   placeholder="https://..."
-                  className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]"
+                  className="w-full input-cyber"
                 />
               </div>
               <div className="space-y-1">
@@ -96,7 +96,7 @@ export default async function ImagesPage({
                 <input
                   name="additional_context"
                   placeholder="Optional description..."
-                  className="w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]"
+                  className="w-full input-cyber"
                 />
               </div>
             </div>

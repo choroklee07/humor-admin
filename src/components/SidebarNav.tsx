@@ -11,6 +11,7 @@ const navSections = [
       { href: "/users", label: "USERS" },
       { href: "/images", label: "IMAGES" },
       { href: "/captions", label: "CAPTIONS" },
+      { href: "/caption-ratings", label: "STATISTICS" },
       { href: "/humor", label: "HUMOR" },
       { href: "/terms", label: "TERMS" },
       { href: "/llm", label: "LLM" },
@@ -40,8 +41,8 @@ export function SidebarNav() {
                 href={item.href}
                 className={`flex items-center px-3 py-2.5 rounded font-mono text-[0.68rem] tracking-widest transition-all border-l-2 ${
                   isActive
-                    ? "bg-[rgba(0,212,255,0.08)] text-[#00d4ff] border-[#00d4ff] shadow-[0_0_10px_rgba(0,212,255,0.2)]"
-                    : "text-[rgba(0,212,255,0.35)] hover:text-[rgba(0,212,255,0.7)] hover:bg-[rgba(0,212,255,0.04)] border-transparent"
+                    ? "bg-active cyber-text border-[var(--cyber-cyan)] shadow-[0_0_10px_rgba(0,212,255,0.2)]"
+                    : "t-inactive hover-t-active hover-bg-active border-transparent"
                 }`}
               >
                 {item.label}

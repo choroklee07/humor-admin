@@ -48,7 +48,7 @@ export default async function LlmPromptChainsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "CAPTION REQUEST ID", "STEPS", "CREATED", ""].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                   ))}

@@ -1,5 +1,6 @@
 import { SidebarNav } from "./SidebarNav";
 import { LogoutButton } from "./LogoutButton";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface Props {
   user: { email?: string | null };
@@ -9,7 +10,7 @@ interface Props {
 export function AdminShell({ user, children }: Props) {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="flex items-center justify-between px-5 py-3 border-b border-[rgba(0,212,255,0.12)] bg-[rgba(0,8,18,0.7)] shrink-0">
+      <header className="flex items-center justify-between px-5 py-3 border-b border-[--header-border] bg-[--header-bg] shrink-0" style={{ borderColor: 'var(--header-border)', background: 'var(--header-bg)' }}>
         <div>
           <p className="cyber-text font-mono text-xs font-bold tracking-[0.2em]">
             {`// HUMOR`}
@@ -20,11 +21,12 @@ export function AdminShell({ user, children }: Props) {
         </div>
         <div className="flex items-center gap-4">
           <p className="cyber-label text-[0.6rem] truncate">{user.email}</p>
+          <ThemeToggle />
           <LogoutButton />
         </div>
       </header>
       <div className="flex flex-1 min-h-0">
-        <aside className="w-52 shrink-0 border-r border-[rgba(0,212,255,0.12)] bg-[rgba(0,8,18,0.7)]">
+        <aside className="w-52 shrink-0 border-r" style={{ borderColor: 'var(--sidebar-border)', background: 'var(--sidebar-bg)' }}>
           <div className="py-3">
             <SidebarNav />
           </div>

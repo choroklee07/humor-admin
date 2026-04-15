@@ -3,8 +3,7 @@ import { AdminShell } from "@/components/AdminShell";
 import Link from "next/link";
 import { createDomain, deleteDomain, createEmail, updateEmail, deleteEmail } from "./actions";
 
-const inputCls =
-  "w-full bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-3 py-2 font-mono text-xs text-[#c8f0ff] placeholder-[rgba(0,212,255,0.2)] focus:outline-none focus:border-[rgba(0,212,255,0.6)] focus:shadow-[0_0_8px_rgba(0,212,255,0.3)]";
+const inputCls = "w-full input-cyber";
 
 export default async function AllowedDomainsPage({
   searchParams,
@@ -41,7 +40,7 @@ export default async function AllowedDomainsPage({
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 border-b border-[rgba(0,212,255,0.15)]">
+        <div className="flex gap-1 border-b border-table">
           {[
             { key: "domains", label: "ALLOWED DOMAINS", count: domains?.length ?? 0 },
             { key: "emails", label: "WHITELISTED EMAILS", count: emails?.length ?? 0 },
@@ -52,7 +51,7 @@ export default async function AllowedDomainsPage({
               className={`px-5 py-2.5 font-mono text-[0.65rem] tracking-widest border-b-2 transition-all ${
                 activeTab === key
                   ? "text-[#00d4ff] border-[#00d4ff]"
-                  : "text-[rgba(0,212,255,0.35)] border-transparent hover:text-[rgba(0,212,255,0.6)]"
+                  : "t-inactive border-transparent hover-t-active"
               }`}
             >
               {label}{" "}
@@ -87,7 +86,7 @@ export default async function AllowedDomainsPage({
               <div className="overflow-x-auto">
                 <table className="w-full text-xs font-mono">
                   <thead>
-                    <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                    <tr className="border-b border-table">
                       {["ID", "APEX DOMAIN", "ADDED", "ACTIONS"].map((h) => (
                         <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                           {h}
@@ -100,13 +99,13 @@ export default async function AllowedDomainsPage({
                       domains.map((domain: any) => (
                         <tr
                           key={domain.id}
-                          className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                          className="border-b border-row-divider hover-row transition-colors"
                         >
                           <td className="px-4 py-3 cyber-label">{domain.id}</td>
                           <td className="px-4 py-3">
                             <span className="text-[#00ff88] font-bold tracking-wider">{domain.apex_domain}</span>
                           </td>
-                          <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                          <td className="px-4 py-3 t-muted">
                             {new Date(domain.created_datetime_utc).toLocaleDateString()}
                           </td>
                           <td className="px-4 py-3">
@@ -158,7 +157,7 @@ export default async function AllowedDomainsPage({
               <div className="overflow-x-auto">
                 <table className="w-full text-xs font-mono">
                   <thead>
-                    <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                    <tr className="border-b border-table">
                       {["ID", "EMAIL", "ADDED", "ACTIONS"].map((h) => (
                         <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                           {h}
@@ -171,7 +170,7 @@ export default async function AllowedDomainsPage({
                       emails.map((entry: any) => (
                         <tr
                           key={entry.id}
-                          className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors group"
+                          className="border-b border-row-divider hover-row transition-colors group"
                         >
                           <td className="px-4 py-3 cyber-label">{entry.id}</td>
                           <td className="px-4 py-3">
@@ -182,14 +181,14 @@ export default async function AllowedDomainsPage({
                                 type="email"
                                 required
                                 defaultValue={entry.email_address}
-                                className="bg-transparent border border-transparent group-hover:border-[rgba(0,212,255,0.2)] focus:border-[rgba(0,212,255,0.6)] rounded px-2 py-1 font-mono text-xs text-[#00ff88] font-bold tracking-wider focus:outline-none focus:bg-[rgba(0,212,255,0.05)] w-56"
+                                className="bg-transparent border border-transparent group-hover:border-input focus:border-[rgba(0,212,255,0.6)] rounded px-2 py-1 font-mono text-xs text-[#00ff88] font-bold tracking-wider focus:outline-none focus:bg-[rgba(0,212,255,0.05)] w-56"
                               />
                               <button type="submit" className="cyber-btn rounded px-3 py-1 text-[0.6rem] opacity-0 group-hover:opacity-100 transition-opacity">
                                 SAVE
                               </button>
                             </form>
                           </td>
-                          <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                          <td className="px-4 py-3 t-muted">
                             {new Date(entry.created_datetime_utc).toLocaleDateString()}
                           </td>
                           <td className="px-4 py-3">

@@ -163,7 +163,7 @@ export interface Database {
           modified_by_user_id?: string;
         };
       };
-      caption_saved: {
+      caption_saves: {
         Row: {
           id: number;
           created_datetime_utc: string;

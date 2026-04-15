@@ -32,7 +32,7 @@ export function ImagesTable({
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="border-b border-[rgba(0,212,255,0.15)]">
+              <tr className="border-b border-table">
                 {["PREVIEW", "URL", "UPLOADER", "PUBLIC", "COMMON USE", "CREATED", "ACTIONS"].map((h) => (
                   <th key={h} className="cyber-label px-4 py-3 text-left font-normal">
                     {h}
@@ -45,7 +45,7 @@ export function ImagesTable({
                 initialData.map((image) => (
                   <tr
                     key={image.id}
-                    className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors"
+                    className="border-b border-row-divider hover-row transition-colors"
                   >
                     <td className="px-4 py-3">
                       {image.url ? (
@@ -53,7 +53,7 @@ export function ImagesTable({
                         <img
                           src={image.url}
                           alt=""
-                          className="w-12 h-12 object-cover rounded border border-[rgba(0,212,255,0.2)]"
+                          className="w-12 h-12 object-cover rounded border border-input"
                         />
                       ) : (
                         <div className="w-12 h-12 rounded border border-[rgba(0,212,255,0.1)] flex items-center justify-center text-[rgba(0,212,255,0.2)]">
@@ -63,7 +63,7 @@ export function ImagesTable({
                     </td>
                     <td className="px-4 py-3 max-w-[200px]">
                       <span
-                        className="text-[rgba(200,240,255,0.6)] truncate block"
+                        className="t-body truncate block"
                         title={image.url ?? ""}
                       >
                         {image.url
@@ -71,7 +71,7 @@ export function ImagesTable({
                           : "—"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">
+                    <td className="px-4 py-3 t-dim">
                       {image.profiles?.email ?? "—"}
                     </td>
                     <td className="px-4 py-3">
@@ -80,7 +80,7 @@ export function ImagesTable({
                     <td className="px-4 py-3">
                       <Badge active={image.is_common_use ?? false} color="purple" />
                     </td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">
+                    <td className="px-4 py-3 t-muted">
                       {new Date(image.created_datetime_utc).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">
@@ -158,11 +158,11 @@ export function ImagesTable({
 function Badge({ active, color }: { active: boolean; color: "cyan" | "purple" }) {
   const colors = {
     cyan: active
-      ? "border-[#00d4ff] text-[#00d4ff] bg-[rgba(0,212,255,0.08)]"
-      : "border-[rgba(0,212,255,0.15)] text-[rgba(0,212,255,0.25)]",
+      ? "border-[#00d4ff] text-[#00d4ff] bg-active"
+      : "border-table text-[rgba(0,212,255,0.25)]",
     purple: active
       ? "border-[#bf00ff] text-[#bf00ff] bg-[rgba(191,0,255,0.08)]"
-      : "border-[rgba(0,212,255,0.15)] text-[rgba(0,212,255,0.25)]",
+      : "border-table text-[rgba(0,212,255,0.25)]",
   };
   return (
     <span className={`px-2 py-0.5 rounded text-[0.6rem] tracking-wider border ${colors[color]}`}>

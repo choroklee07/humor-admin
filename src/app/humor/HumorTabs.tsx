@@ -27,8 +27,8 @@ export function HumorTabs({
             onClick={() => setActive(tab)}
             className={`px-5 py-2 font-mono text-[0.65rem] tracking-widest rounded transition-all border ${
               active === tab
-                ? "bg-[rgba(0,212,255,0.12)] text-[#00d4ff] border-[rgba(0,212,255,0.5)] shadow-[0_0_10px_rgba(0,212,255,0.2)]"
-                : "text-[rgba(0,212,255,0.35)] border-[rgba(0,212,255,0.15)] hover:text-[rgba(0,212,255,0.6)] hover:border-[rgba(0,212,255,0.3)]"
+                ? "bg-tab-active cyber-text border-tab-active shadow-[0_0_10px_rgba(0,212,255,0.2)]"
+                : "t-inactive border-table hover-t-active hover:border-img"
             }`}
           >
             {tab}
@@ -46,7 +46,7 @@ export function HumorTabs({
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                <tr className="border-b border-table">
                   {["ID", "SLUG", "DESCRIPTION", "CREATED"].map((h) => (
                     <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                   ))}
@@ -54,11 +54,11 @@ export function HumorTabs({
               </thead>
               <tbody>
                 {flavors.map((f: any) => (
-                  <tr key={f.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                  <tr key={f.id} className="border-b border-row-divider hover-row transition-colors">
                     <td className="px-4 py-3 cyber-label">{f.id}</td>
                     <td className="px-4 py-3"><span className="text-[#00d4ff] font-bold tracking-wider">{f.slug}</span></td>
-                    <td className="px-4 py-3 max-w-[400px]"><span className="text-[rgba(200,240,255,0.7)] block truncate" title={f.description ?? ""}>{f.description ?? <span className="opacity-30">—</span>}</span></td>
-                    <td className="px-4 py-3 text-[rgba(200,240,255,0.4)]">{new Date(f.created_datetime_utc).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 max-w-[400px]"><span className="t-body block truncate" title={f.description ?? ""}>{f.description ?? <span className="opacity-30">—</span>}</span></td>
+                    <td className="px-4 py-3 t-muted">{new Date(f.created_datetime_utc).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -78,7 +78,7 @@ export function HumorTabs({
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["ID", "FLAVOR", "ORDER", "STEP TYPE", "MODEL", "TEMP", "DESCRIPTION"].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -86,15 +86,15 @@ export function HumorTabs({
                 </thead>
                 <tbody>
                   {steps.map((s: any) => (
-                    <tr key={s.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                    <tr key={s.id} className="border-b border-row-divider hover-row transition-colors">
                       <td className="px-4 py-3 cyber-label">{s.id}</td>
                       <td className="px-4 py-3"><span className="text-[#00d4ff] font-bold">{s.humor_flavors?.slug ?? "—"}</span></td>
                       <td className="px-4 py-3 cyber-value text-center">{s.order_by}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.6)]">{s.humor_flavor_step_types?.slug ?? "—"}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.7)]">{s.llm_models?.name ?? "—"}</td>
-                      <td className="px-4 py-3 text-[rgba(200,240,255,0.5)]">{s.llm_temperature ?? "—"}</td>
+                      <td className="px-4 py-3 t-body">{s.humor_flavor_step_types?.slug ?? "—"}</td>
+                      <td className="px-4 py-3 t-body">{s.llm_models?.name ?? "—"}</td>
+                      <td className="px-4 py-3 t-dim">{s.llm_temperature ?? "—"}</td>
                       <td className="px-4 py-3 max-w-[240px]">
-                        <span className="text-[rgba(200,240,255,0.7)] block truncate" title={s.description ?? ""}>
+                        <span className="t-body block truncate" title={s.description ?? ""}>
                           {s.description ?? <span className="opacity-30">—</span>}
                         </span>
                       </td>
@@ -118,7 +118,7 @@ export function HumorTabs({
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-[rgba(0,212,255,0.15)]">
+                  <tr className="border-b border-table">
                     {["ID", "FLAVOR", "CAPTION COUNT", ""].map((h) => (
                       <th key={h} className="cyber-label px-4 py-3 text-left font-normal">{h}</th>
                     ))}
@@ -126,7 +126,7 @@ export function HumorTabs({
                 </thead>
                 <tbody>
                   {mix.map((row: any) => (
-                    <tr key={row.id} className="border-b border-[rgba(0,212,255,0.06)] hover:bg-[rgba(0,212,255,0.03)] transition-colors">
+                    <tr key={row.id} className="border-b border-row-divider hover-row transition-colors">
                       <td className="px-4 py-3 cyber-label">{row.id}</td>
                       <td className="px-4 py-3"><span className="text-[#00d4ff] font-bold tracking-wider">{row.humor_flavors?.slug ?? "—"}</span></td>
                       <td className="px-4 py-3" colSpan={2}>
@@ -137,7 +137,7 @@ export function HumorTabs({
                             name="caption_count"
                             defaultValue={row.caption_count}
                             min={0}
-                            className="w-20 bg-[rgba(0,212,255,0.05)] border border-[rgba(0,212,255,0.2)] rounded px-2 py-1 font-mono text-xs text-[#c8f0ff] focus:outline-none focus:border-[rgba(0,212,255,0.6)]"
+                            className="w-20 input-cyber px-2 py-1"
                           />
                           <button type="submit" className="cyber-btn rounded px-3 py-1 text-[0.6rem]">SAVE</button>
                         </form>
